@@ -13,7 +13,7 @@ using namespace std;
 class scheduler
 {
 public:
-	scheduler(/* args */);
+	scheduler(vector<process> _processes, string _algorithm);
 	~scheduler();
 	/**/
 	int FCFS(/* args */);
@@ -29,6 +29,7 @@ public:
 private:
 	/* data */
 	vector<process> processes;
+	string algorithm;
 };
 
 #endif

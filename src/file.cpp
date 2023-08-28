@@ -54,3 +54,8 @@ void file::print_processes_params()
 		cout << *p;
 	}
 }
+
+vector<processParams *> file::getProcesses()
+{
+	return this->processes;
+}

@@ -21,6 +21,8 @@ public:
 	void read_file();
 	/**/
 	void print_processes_params();
+	/**/
+	vector<processParams *> getProcesses();
 
 private:
 	ifstream myfile;
