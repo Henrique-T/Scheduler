@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "processParams.h"
+#include "ProcessParams.h"
 #include "File.h"
 
 using namespace std;
@@ -20,7 +20,7 @@ File::~File()
 {
 	for (int i = 0; i < processes.size(); i++)
 	{
-		processParams *p = processes[i];
+		ProcessParams *p = processes[i];
 		delete p;
 	}
 }
@@ -37,7 +37,7 @@ void File::read_file()
 
 	while (myfile >> a >> b >> c)
 	{
-		processParams *p = new processParams(a, b, c);
+		ProcessParams *p = new ProcessParams(a, b, c);
 		processes.push_back(p);
 	}
 
@@ -46,16 +46,16 @@ void File::read_file()
 
 void File::print_processes_params()
 {
-	vector<processParams *>::iterator iter = processes.begin();
+	vector<ProcessParams *>::iterator iter = processes.begin();
 
 	for (iter; iter < processes.end(); iter++)
 	{
-		processParams *p = *iter;
+		ProcessParams *p = *iter;
 		cout << *p;
 	}
 }
 
-vector<processParams *> File::getProcesses()
+vector<ProcessParams *> File::getProcesses()
 {
 	return this->processes;
 }

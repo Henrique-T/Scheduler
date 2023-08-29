@@ -36,7 +36,7 @@ Scheduler::Scheduler(vector<Process> _processes, string _algorithm)
 	}
 }
 
-Scheduler::~scheduler()
+Scheduler::~Scheduler()
 {
 }
 

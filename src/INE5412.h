@@ -5,7 +5,7 @@
 #include "ContextProcess.h"
 #include "Process.h"
 #include "ContextCPU.h"
-#include "processParams.h"
+#include "ProcessParams.h"
 #include <vector>
 
 using namespace std;
@@ -19,7 +19,7 @@ class INE5412
 public:
 	INE5412(/* args */);
 	~INE5412();
-	vector<Process> createProcesses(vector<ProcessParams *> _processes, int _qtyOfRawProcesses);
+	vector<Process> createProcesses(vector<ProcessParams *> _rawProcesses, int _qtyOfRawProcesses);
 
 private:
 	/* data */

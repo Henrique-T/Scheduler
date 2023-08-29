@@ -1,5 +1,5 @@
 #include "INE5412.h"
-#include "processParams.h"
+#include "ProcessParams.h"
 #include "File.h"
 #include "Scheduler.h"
 
@@ -11,7 +11,7 @@ INE5412::INE5412(/* args */)
 	File f;
 	f.read_file();
 	vector<ProcessParams *> rawProcesses = f.getProcesses();
-	vector<Process> processes = this->createProcesses(rawProcesses, rawProcesses.size());
+	//vector<Process> processes = this->createProcesses(rawProcesses, rawProcesses.size());
 
 	// Create and call scheduler.
 	// scheduler *sched = new scheduler::scheduler(processes, "");

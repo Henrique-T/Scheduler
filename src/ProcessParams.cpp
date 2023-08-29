@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "processParams.h"
+#include "ProcessParams.h"
 
 using namespace std;
 
