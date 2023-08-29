@@ -4,12 +4,12 @@
 /*
 	
 */
-class contextCPU
+class ContextCPU
 {
 
 public:
-	contextCPU(/* args */);
-	~contextCPU();
+	ContextCPU(/* args */);
+	~ContextCPU();
 
 private:
 	/* data */

@@ -1,9 +1,9 @@
-#include "contextCPU.h"
+#include "ContextCPU.h"
 
-contextCPU::contextCPU(/* args */)
+ContextCPU::ContextCPU(/* args */)
 {
 }
 
-contextCPU::~contextCPU()
+ContextCPU::~ContextCPU()
 {
 }

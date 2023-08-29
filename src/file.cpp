@@ -3,11 +3,11 @@
 #include <string>
 #include <vector>
 #include "processParams.h"
-#include "file.h"
+#include "File.h"
 
 using namespace std;
 
-file::file()
+File::File()
 {
 	myfile.open("entrada.txt");
 	if (!myfile.is_open())
@@ -16,7 +16,7 @@ file::file()
 	}
 }
 
-file::~file()
+File::~File()
 {
 	for (int i = 0; i < processes.size(); i++)
 	{
@@ -25,7 +25,7 @@ file::~file()
 	}
 }
 
-void file::read_file()
+void File::read_file()
 {
 
 	int a, b, c;
@@ -44,7 +44,7 @@ void file::read_file()
 	cout << "Quantidade de processos lidos do arquivo: " << processes.size() << endl;
 }
 
-void file::print_processes_params()
+void File::print_processes_params()
 {
 	vector<processParams *>::iterator iter = processes.begin();
 
@@ -55,7 +55,7 @@ void file::print_processes_params()
 	}
 }
 
-vector<processParams *> file::getProcesses()
+vector<processParams *> File::getProcesses()
 {
 	return this->processes;
 }

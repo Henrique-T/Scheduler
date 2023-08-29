@@ -2,7 +2,7 @@
 #define SCHEDULER_H
 
 #include <vector>
-#include "process.h"
+#include "Process.h"
 
 using namespace std;
 
@@ -10,11 +10,11 @@ using namespace std;
 	Manages processes and their contexts, based on a chosen algorithm.
 	The algorithm is chosen by the user through the command line.
 */
-class scheduler
+class Scheduler
 {
 public:
-	scheduler(vector<process> _processes, string _algorithm);
-	~scheduler();
+	Scheduler(vector<Process> _processes, string _algorithm);
+	~Scheduler();
 	/**/
 	int FCFS(/* args */);
 	/**/
@@ -28,7 +28,7 @@ public:
 
 private:
 	/* data */
-	vector<process> processes;
+	vector<Process> processes;
 	string algorithm;
 };
 

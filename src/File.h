@@ -12,21 +12,21 @@ using namespace std;
 /*
 	Represents the input .txt file.
 */
-class file
+class File
 {
 public:
-	file();
-	~file();
+	File();
+	~File();
 	/**/
 	void read_file();
 	/**/
 	void print_processes_params();
 	/**/
-	vector<processParams *> getProcesses();
+	vector<ProcessParams *> getProcesses();
 
 private:
 	ifstream myfile;
-	vector<processParams *> processes;
+	vector<ProcessParams *> processes;
 };
 
 #endif

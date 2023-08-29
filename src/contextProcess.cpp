@@ -1,9 +1,9 @@
-#include "contextProcess.h"
+#include "ContextProcess.h"
 
-contextProcess::contextProcess(/* args */)
+ContextProcess::ContextProcess(/* args */)
 {
 }
 
-contextProcess::~contextProcess()
+ContextProcess::~ContextProcess()
 {
 }

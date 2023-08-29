@@ -1,9 +1,13 @@
-#include "process.h"
+#include "Process.h"
 
-process::process(/* args */)
+Process::Process(int _creationTime, int _duration, int _priority)
 {
+	// automatically create and set a pid;
+	//this->pid = randomPid();
+	// create and set context
+	//this->context = newContext(_creationTime, _duration,  _priority)
 }
 
-process::~process()
+Process::~Process()
 {
 }

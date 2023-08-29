@@ -2,9 +2,10 @@
 #define INE5412_H
 
 #include <sys/types.h>
-#include "contextProcess.h"
-#include "process.h"
-#include "contextCPU.h"
+#include "ContextProcess.h"
+#include "Process.h"
+#include "ContextCPU.h"
+#include "processParams.h"
 #include <vector>
 
 using namespace std;
@@ -18,11 +19,11 @@ class INE5412
 public:
 	INE5412(/* args */);
 	~INE5412();
-	vector<process> createProcesses(vector<processParams *> _processes);
+	vector<Process> createProcesses(vector<ProcessParams *> _processes, int _qtyOfRawProcesses);
 
 private:
 	/* data */
-	contextCPU contextCPU; // do we need a context for CPU?
+	ContextCPU _contextCPU; // do we need a context for CPU?
 };
 
 #endif

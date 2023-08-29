@@ -7,5 +7,6 @@ int main()
 {
 	printf("TEST\n");
 	helloWorld();
+	// Create an instance of INE5412.
 	return 1;
 }

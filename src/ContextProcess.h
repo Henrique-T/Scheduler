@@ -8,7 +8,7 @@ using namespace std;
 /*
 	Represents the context of a process.
 */
-class contextProcess
+class ContextProcess
 {
 private:
 	/* data */
@@ -23,8 +23,8 @@ private:
 	float executedTimeTotal;
 
 public:
-	contextProcess(/* args */);
-	~contextProcess();
+	ContextProcess(/* args */);
+	~ContextProcess();
 };
 
 #endif

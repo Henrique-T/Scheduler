@@ -2,21 +2,21 @@
 #define PROCESS_H
 
 #include <sys/types.h>
-#include "contextProcess.h"
+#include "ContextProcess.h"
 
 /*
 	Represents a process.
 */
-class process
+class Process
 {
 public:
-	process(/* args */);
-	~process();
+	Process(int _creatioTime, int _duration, int _priority);
+	~Process();
 
 private:
 	/* data */
 	pid_t pid;
-	contextProcess context;
+	ContextProcess context;
 };
 
 #endif

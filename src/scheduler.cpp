@@ -1,6 +1,6 @@
-#include "scheduler.h"
+#include "Scheduler.h"
 
-scheduler::scheduler(vector<process> _processes, string _algorithm)
+Scheduler::Scheduler(vector<Process> _processes, string _algorithm)
 {
 	this->processes = _processes;
 	this->algorithm = _algorithm;
@@ -36,33 +36,33 @@ scheduler::scheduler(vector<process> _processes, string _algorithm)
 	}
 }
 
-scheduler::~scheduler()
+Scheduler::~scheduler()
 {
 }
 
 /////////////// Scheduling Algorithms ///////////////
 
-int scheduler::FCFS(/* args */)
+int Scheduler::FCFS(/* args */)
 {
 	return 0;
 }
 
-int scheduler::shortestJobFirst(/* args */)
+int Scheduler::shortestJobFirst(/* args */)
 {
 	return 0;
 }
 
-int scheduler::priorityWithoutPreemption(/* args */)
+int Scheduler::priorityWithoutPreemption(/* args */)
 {
 	return 0;
 }
 
-int scheduler::priorityWithPreemption(/* args */)
+int Scheduler::priorityWithPreemption(/* args */)
 {
 	return 0;
 }
 
-int scheduler::roundRobin(/* args */)
+int Scheduler::roundRobin(/* args */)
 {
 	return 0;
 }
