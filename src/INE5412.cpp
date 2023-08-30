@@ -11,7 +11,7 @@ INE5412::INE5412(/* args */)
 	File f;
 	f.read_file();
 	vector<ProcessParams *> rawProcesses = f.getProcesses();
-	//vector<Process> processes = this->createProcesses(rawProcesses, rawProcesses.size());
+	vector<Process> processes = this->createProcesses(rawProcesses, rawProcesses.size());
 
 	// Create and call scheduler.
 	// scheduler *sched = new scheduler::scheduler(processes, "");
@@ -21,11 +21,19 @@ INE5412::~INE5412()
 {
 }
 
-vector<Process> createProcesses(vector<ProcessParams *> _rawProcesses, int _qtyOfRawProcesses)
+vector<Process> INE5412::createProcesses(vector<ProcessParams *> _rawProcesses, int _qtyOfRawProcesses)
 {
 	// this is where we start everything. I'm aware the f.getProcesses() already gives us
 	// a list of processes, but I want to move to our own list.
 	// In here we create the processes and return a list of them.
+
+	// vector<ProcessParams *>::iterator iter = _rawProcesses.begin();
+	// for (iter; iter < _rawProcesses.end(); iter++)
+	// {
+	// 	ProcessParams *p = *iter;
+	// 	cout << *p;
+	// }
+
 	vector<Process> processes;
 	for (int i = 0; i < _qtyOfRawProcesses; i++)
 	{
@@ -38,10 +46,3 @@ vector<Process> createProcesses(vector<ProcessParams *> _rawProcesses, int _qtyO
 	}
 	return processes;
 }
-
-// int main()
-// {
-// 	File f;
-// 	f.read_file();
-// 	f.print_processes_params();
-// }
