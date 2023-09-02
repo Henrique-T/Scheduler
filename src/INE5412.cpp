@@ -13,6 +13,12 @@ INE5412::INE5412(/* args */)
 	vector<ProcessParams *> rawProcesses = f.getProcesses();
 	vector<Process> processes = this->createProcesses(rawProcesses, rawProcesses.size());
 
+	// for (size_t i = 0; i < processes.size(); i++)
+	// {
+	// 	Process current = processes.at(i);
+	// 	cout << i << " " << current.getPid() << "\n";
+	// }
+
 	// Create and call scheduler.
 	// scheduler *sched = new scheduler::scheduler(processes, "");
 }
