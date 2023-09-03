@@ -17,13 +17,13 @@ private:
 public:
 	Process(int _creatioTime, int _duration, int _priority);
 	~Process();
-
-	// gets
+	/**/
 	pid_t getPid();
+	/**/
 	ContextProcess getContext();
-
-	// sets
+	/**/
 	void setPid(pid_t _pid);
+	/**/
 	void setContext(ContextProcess _context);
 };
 

@@ -19,11 +19,12 @@ class INE5412
 public:
 	INE5412(/* args */);
 	~INE5412();
+	/**/
 	vector<Process> createProcesses(vector<ProcessParams *> _rawProcesses, int _qtyOfRawProcesses);
 
 private:
 	/* data */
-	ContextCPU _contextCPU; // do we need a context for CPU?
+	ContextCPU _contextCPU;
 };
 
 #endif

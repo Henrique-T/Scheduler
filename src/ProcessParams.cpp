@@ -13,43 +13,16 @@ ProcessParams::ProcessParams(int c, int d, int p)
 	priority = p;
 }
 
-ProcessParams::~ProcessParams()
-{
-}
+ProcessParams::~ProcessParams() {}
 
-int ProcessParams::getCreationTime()
-{
-	return this->creation_time;
-}
+int ProcessParams::getCreationTime() { return this->creation_time; }
 
-int ProcessParams::getDuration()
-{
-	return this->duration;
-}
+int ProcessParams::getDuration() { return this->duration; }
 
-int ProcessParams::getPriority()
-{
-	return this->priority;
-}
+int ProcessParams::getPriority() { return this->priority; }
 
-void ProcessParams::setCreationTime(int creationTime)
-{
-	this->creation_time = creationTime;
-}
+void ProcessParams::setCreationTime(int creationTime) { this->creation_time = creationTime; }
 
-void ProcessParams::setDuration(int duration)
-{
-	this->duration = duration;
-}
+void ProcessParams::setDuration(int duration) { this->duration = duration; }
 
-void ProcessParams::setPriority(int priority)
-{
-	this->priority = priority;
-}
-
-// int main()
-// {
-// 	File f;
-// 	f.read_file();
-// 	f.print_processes_params();
-// }
+void ProcessParams::setPriority(int priority) { this->priority = priority; }

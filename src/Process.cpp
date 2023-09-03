@@ -15,10 +15,12 @@ Process::Process(int _creationTime, int _duration, int _priority)
 
 Process::~Process() {}
 
-// gets
+/////////////// gets ///////////////
+
 pid_t Process::getPid() { return this->pid; }
 ContextProcess Process::getContext() { return this->context; }
 
-// sets
+/////////////// sets  ///////////////
+
 void Process::setPid(pid_t _pid) { this->pid = _pid; }
 void Process::setContext(ContextProcess _context) { this->context = _context; }

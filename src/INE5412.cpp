@@ -13,14 +13,21 @@ INE5412::INE5412(/* args */)
 	vector<ProcessParams *> rawProcesses = f.getProcesses();
 	vector<Process> processes = this->createProcesses(rawProcesses, rawProcesses.size());
 
-	// for (size_t i = 0; i < processes.size(); i++)
-	// {
-	// 	Process current = processes.at(i);
-	// 	cout << i << " " << current.getPid() << "\n";
-	// }
+	for (size_t i = 0; i < processes.size(); i++)
+	{
+		Process current = processes.at(i);
+		cout << "index: " << i << " pid: " << current.getPid() << "\n";
+		cout << "state: " << current.getContext().getCurrentState() << "\n";
+		cout << "---------------------------\n";
+	}
 
-	// Create and call scheduler.
-	// scheduler *sched = new scheduler::scheduler(processes, "");
+	//Create and call scheduler.
+	Scheduler sched;
+	sched.prettyPrint(
+		processes.at(0).getContext().getCurrentState(),
+		processes.at(1).getContext().getCurrentState(),
+		processes.at(2).getContext().getCurrentState(),
+		processes.at(3).getContext().getCurrentState());
 }
 
 INE5412::~INE5412()
