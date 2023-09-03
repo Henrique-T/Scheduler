@@ -46,10 +46,41 @@ Scheduler::~Scheduler()
 {
 }
 
-/////////////// Scheduling Algorithms ///////////////
+/////////////// Scheduling Algorithms and helpers ///////////////
 
 int Scheduler::FCFS(/* args */)
 {
+	// Find the wait time and turn around time for each and all processes
+	this->getProcesses().at(0).getContext().setWaitingTime(0);
+	this->getProcesses().at(0).getContext().setTurnAroundTime(
+		this->getProcesses().at(0).getContext().getDuration() +
+		this->getProcesses().at(0).getContext().getWaitingTime());
+
+	for (size_t i = 1; i < this->getProcesses().size(); i++)
+	{
+		int previousDurationTime = this->getProcesses().at(i - 1).getContext().getDuration();
+		int previousWaitingTime = this->getProcesses().at(i - 1).getContext().getWaitingTime();
+		this->getProcesses().at(i).getContext().setWaitingTime(
+			previousDurationTime + previousWaitingTime);
+		int duration = this->getProcesses().at(i).getContext().getDuration();
+		int waitingTime = this->getProcesses().at(i).getContext().getWaitingTime();
+		this->getProcesses().at(i).getContext().setTurnAroundTime(duration + waitingTime);
+	}
+
+	// Find average time
+	int totalWaitingTime = 0, totalTurnAroundTime = 0;
+	for (size_t i = 0; i < this->getProcesses().size(); i++)
+	{
+		totalWaitingTime = totalWaitingTime + this->getProcesses().at(i).getContext().getWaitingTime();
+		totalTurnAroundTime = totalTurnAroundTime +
+							  this->getProcesses().at(i).getContext().getTurnAroundTime();
+	}
+
+	cout << "Average waiting time = "
+		 << (float)totalWaitingTime / (float)this->getProcesses().size();
+	cout << "\nAverage turn around time = "
+		 << (float)totalTurnAroundTime / (float)this->getProcesses().size() << "\n";
+
 	return 0;
 }
 
@@ -73,6 +104,13 @@ int Scheduler::roundRobin(/* args */)
 	return 0;
 }
 
+void Scheduler::findTurnAroundTimeForEach() {}
+void Scheduler::findWaitingTimeForEach() {}
+void Scheduler::findTotalTimesOfContextChangeForEach() {}
+void Scheduler::findAverageTurnAroundTime() {}
+void Scheduler::findAverageWaitingTime() {}
+void Scheduler::findAverageTimesOfContextChange() {}
+
 /////////////// gets ///////////////
 
 vector<Process> Scheduler::getProcesses() { return this->processes; }
@@ -92,6 +130,8 @@ Process Scheduler::getProcessByPid(pid_t _pid)
 			return this->getProcesses().at(i);
 		}
 	}
+	Process n;
+	return n; // returning an empty process may be dangerous.
 }
 
 string Scheduler::getAlgorithm() { return this->algorithm; }

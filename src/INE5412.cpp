@@ -13,21 +13,23 @@ INE5412::INE5412(/* args */)
 	vector<ProcessParams *> rawProcesses = f.getProcesses();
 	vector<Process> processes = this->createProcesses(rawProcesses, rawProcesses.size());
 
-	for (size_t i = 0; i < processes.size(); i++)
-	{
-		Process current = processes.at(i);
-		cout << "index: " << i << " pid: " << current.getPid() << "\n";
-		cout << "state: " << current.getContext().getCurrentState() << "\n";
-		cout << "---------------------------\n";
-	}
+	// for (size_t i = 0; i < processes.size(); i++)
+	// {
+	// 	Process current = processes.at(i);
+	// 	cout << "index: " << i << " pid: " << current.getPid() << "\n";
+	// 	cout << "state: " << current.getContext().getCurrentState() << "\n";
+	// 	cout << "---------------------------\n";
+	// }
 
 	//Create and call scheduler.
 	Scheduler sched;
-	sched.prettyPrint(
-		processes.at(0).getContext().getCurrentState(),
-		processes.at(1).getContext().getCurrentState(),
-		processes.at(2).getContext().getCurrentState(),
-		processes.at(3).getContext().getCurrentState());
+	sched.setProcesses(processes);
+	sched.FCFS();
+	// sched.prettyPrint(
+	// 	processes.at(0).getContext().getCurrentState(),
+	// 	processes.at(1).getContext().getCurrentState(),
+	// 	processes.at(2).getContext().getCurrentState(),
+	// 	processes.at(3).getContext().getCurrentState());
 }
 
 INE5412::~INE5412()
@@ -39,13 +41,6 @@ vector<Process> INE5412::createProcesses(vector<ProcessParams *> _rawProcesses, 
 	// this is where we start everything. I'm aware the f.getProcesses() already gives us
 	// a list of processes, but I want to move to our own list.
 	// In here we create the processes and return a list of them.
-
-	// vector<ProcessParams *>::iterator iter = _rawProcesses.begin();
-	// for (iter; iter < _rawProcesses.end(); iter++)
-	// {
-	// 	ProcessParams *p = *iter;
-	// 	cout << *p;
-	// }
 
 	vector<Process> processes;
 	for (int i = 0; i < _qtyOfRawProcesses; i++)

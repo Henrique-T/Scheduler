@@ -27,6 +27,8 @@ string ContextProcess::getCurrentState() { return this->currentState; }
 float ContextProcess::getExecutedTimeCurrentQuantum() { return this->executedTimeCurrentQuantum; }
 float ContextProcess::getExecutedTimeTotal() { return this->executedTimeTotal; }
 int ContextProcess::getCreationTime() { return this->creationTime; }
+int ContextProcess::getWaitingTime() { return this->waitingTime; }
+int ContextProcess::getTurnAroundTime() { return this->turnAroundTime; }
 
 /////////////// sets ///////////////
 
@@ -40,3 +42,5 @@ void ContextProcess::setCurrentState(string _currentState) { this->currentState 
 void ContextProcess::setExecutedTimeCurrentQuantum(float _executedTimeCurrentQuantum) { this->executedTimeCurrentQuantum = _executedTimeCurrentQuantum; }
 void ContextProcess::setExecutedTimeTotal(float _executedTimeTotal) { this->executedTimeTotal = _executedTimeTotal; }
 void ContextProcess::setCreationTime(int _creationTime) { this->creationTime = _creationTime; }
+void ContextProcess::setWaitingTime(int _waitingTime) { this->waitingTime = _waitingTime; }
+void ContextProcess::setTurnAroundTime(int _turnAroundTime) { this->turnAroundTime = _turnAroundTime; }

@@ -2,6 +2,8 @@
 #include "ContextProcess.h"
 #include <cstdlib>
 
+Process::Process() {}
+
 Process::Process(int _creationTime, int _duration, int _priority)
 {
 	// create and set pid (within range 0-10);

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <queue>
 #include "Process.h"
 
 using namespace std;
@@ -46,6 +47,18 @@ public:
 	int priorityWithPreemption(/* args */);
 	/**/
 	int roundRobin(/* args */);
+	/**/
+	void findTurnAroundTimeForEach();
+	/**/
+	void findWaitingTimeForEach();
+	/**/
+	void findTotalTimesOfContextChangeForEach();
+	/**/
+	void findAverageTurnAroundTime();
+	/**/
+	void findAverageWaitingTime();
+	/**/
+	void findAverageTimesOfContextChange();
 };
 
 #endif

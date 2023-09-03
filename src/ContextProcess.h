@@ -22,6 +22,8 @@ private:
 	float executedTimeCurrentQuantum;
 	float executedTimeTotal;
 	int creationTime;
+	int waitingTime;
+	int turnAroundTime;
 
 public:
 	ContextProcess();
@@ -48,6 +50,10 @@ public:
 	/**/
 	int getCreationTime();
 	/**/
+	int getWaitingTime();
+	/**/
+	int getTurnAroundTime();
+	/**/
 	void setPid(pid_t _pid);
 	/**/
 	void setStartDate(int _startDate);
@@ -67,6 +73,10 @@ public:
 	void setExecutedTimeTotal(float _executedTimeTotal);
 	/**/
 	void setCreationTime(int _creationTime);
+	/**/
+	void setWaitingTime(int _waitingTime);
+	/**/
+	void setTurnAroundTime(int _turnAroundTime);
 };
 
 #endif
