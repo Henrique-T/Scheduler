@@ -14,9 +14,17 @@ Scheduler::Scheduler(string _algorithm)
 	f.read_file();
 	this->setRawProcesses(f.getProcesses());
 	this->createProcesses();
-
-	this->setProcesses(processes);
 	this->setAlgorithm(_algorithm);
+
+	// for (size_t i = 0; i < this->getProcesses().size(); i++)
+	// {
+	// 	Process process = this->getProcesses().at(i);
+	// 	cout << "creation time: " << process.getContext().getCreationTime() << "\n";
+	// 	cout << "duration: " << process.getContext().getDuration() << "\n";
+	// 	cout << "priority: " << process.getContext().getStaticPriority() << "\n";
+	// 	cout << "--------------------------------------------------------"
+	// 		 << "\n";
+	// }
 
 	if (_algorithm == "FCFS")
 	{
@@ -49,9 +57,7 @@ Scheduler::Scheduler(string _algorithm)
 	}
 }
 
-Scheduler::~Scheduler()
-{
-}
+Scheduler::~Scheduler() {}
 
 /////////////// Creation of the processes list ///////////////
 
@@ -59,7 +65,7 @@ void Scheduler::createProcesses()
 {
 	// this is where we start everything. I'm aware the f.getProcesses() already gives us
 	// a list of processes, but I want to move to our own list.
-	// In here we create the processes and return a list of them.
+	// In here we create the processes.
 
 	for (size_t i = 0; i < this->getRawProcesses().size(); i++)
 	{
@@ -68,7 +74,7 @@ void Scheduler::createProcesses()
 			currentRawProcess->getCreationTime(),
 			currentRawProcess->getDuration(),
 			currentRawProcess->getPriority());
-		this->getProcesses().push_back(process); // not sure if this works
+		this->insertProcess(process);
 	}
 }
 
@@ -77,6 +83,12 @@ void Scheduler::createProcesses()
 int Scheduler::FCFS(/* args */)
 {
 	// Find the wait time and turn around time for each and all processes
+
+	/*
+		TODO:
+		I cannot use getContext().setWaitingTime() or anything like that.
+		I need to build a method that sets things by pid, I believe.
+	*/
 	this->getProcesses().at(0).getContext().setWaitingTime(10);
 	this->getProcesses().at(0).getContext().setTurnAroundTime(
 		this->getProcesses().at(0).getContext().getDuration() +
@@ -107,12 +119,12 @@ int Scheduler::FCFS(/* args */)
 	// cout << "\nAverage turn around time = "
 	// 	 << (float)totalTurnAroundTime / (float)this->getProcesses().size() << "\n";
 
-	cout << this->getProcesses().at(0).getContext().getPid()
-		 << " "
-		 << this->getProcesses().at(0).getContext().getWaitingTime()
-		 << " "
-		 << this->getProcesses().at(0).getContext().getTurnAroundTime()
-		 << "\n";
+	// cout << this->getProcesses().at(0).getContext().getPid()
+	// 	 << " "
+	// 	 << this->getProcesses().at(0).getContext().getWaitingTime()
+	// 	 << " "
+	// 	 << this->getProcesses().at(0).getContext().getTurnAroundTime()
+	// 	 << "\n";
 
 	// cout << this->getProcesses().at(0).getContext().getWaitingTime()
 	// 	 << " "
@@ -204,7 +216,13 @@ void Scheduler::setProcesses(vector<Process> _processes)
 	// 	this->processes.push_back(_processes[i]);
 	// }
 }
+
 void Scheduler::setAlgorithm(string _algorithm) { this->algorithm = _algorithm; }
+
+void Scheduler::insertProcess(Process _process)
+{
+	this->processes.push_back(_process);
+}
 
 /////////////// beautifiers ///////////////
 

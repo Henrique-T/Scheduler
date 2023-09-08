@@ -43,6 +43,8 @@ public:
 	void setProcesses(vector<Process> _processes);
 	/**/
 	void setAlgorithm(string _algorithm);
+	/**/
+	void insertProcess(Process _process);
 	/* Pretty prints the final result */
 	void prettyPrint(string _statusp1, string _statusp2, string _statusp3, string _statusp4);
 	/**/
