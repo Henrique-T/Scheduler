@@ -9,6 +9,8 @@ ContextProcess::ContextProcess(int _pid, int _creationTime, int _duration, int _
 	this->setDuration(_duration);
 	this->setStaticPriority(_priority);
 	this->setCurrentState("novo");
+	// this->setTurnAroundTime(0);
+	// this->setWaitingTime(0);
 
 	// we might need more stuff here
 }

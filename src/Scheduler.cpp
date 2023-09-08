@@ -1,4 +1,5 @@
 #include "Scheduler.h"
+#include "File.h"
 #include <map>
 #include <string>
 
@@ -6,9 +7,15 @@ using namespace std;
 
 Scheduler::Scheduler() {}
 
-Scheduler::Scheduler(vector<Process> _processes, string _algorithm)
+Scheduler::Scheduler(string _algorithm)
 {
-	this->setProcesses(_processes);
+	/* Read the file and create a list of processes of type Process. */
+	File f;
+	f.read_file();
+	this->setRawProcesses(f.getProcesses());
+	this->createProcesses();
+
+	this->setProcesses(processes);
 	this->setAlgorithm(_algorithm);
 
 	if (_algorithm == "FCFS")
@@ -46,40 +53,71 @@ Scheduler::~Scheduler()
 {
 }
 
+/////////////// Creation of the processes list ///////////////
+
+void Scheduler::createProcesses()
+{
+	// this is where we start everything. I'm aware the f.getProcesses() already gives us
+	// a list of processes, but I want to move to our own list.
+	// In here we create the processes and return a list of them.
+
+	for (size_t i = 0; i < this->getRawProcesses().size(); i++)
+	{
+		ProcessParams *currentRawProcess = this->getRawProcesses().at(i);
+		Process process(
+			currentRawProcess->getCreationTime(),
+			currentRawProcess->getDuration(),
+			currentRawProcess->getPriority());
+		this->getProcesses().push_back(process); // not sure if this works
+	}
+}
+
 /////////////// Scheduling Algorithms and helpers ///////////////
 
 int Scheduler::FCFS(/* args */)
 {
 	// Find the wait time and turn around time for each and all processes
-	this->getProcesses().at(0).getContext().setWaitingTime(0);
+	this->getProcesses().at(0).getContext().setWaitingTime(10);
 	this->getProcesses().at(0).getContext().setTurnAroundTime(
 		this->getProcesses().at(0).getContext().getDuration() +
 		this->getProcesses().at(0).getContext().getWaitingTime());
 
-	for (size_t i = 1; i < this->getProcesses().size(); i++)
-	{
-		int previousDurationTime = this->getProcesses().at(i - 1).getContext().getDuration();
-		int previousWaitingTime = this->getProcesses().at(i - 1).getContext().getWaitingTime();
-		this->getProcesses().at(i).getContext().setWaitingTime(
-			previousDurationTime + previousWaitingTime);
-		int duration = this->getProcesses().at(i).getContext().getDuration();
-		int waitingTime = this->getProcesses().at(i).getContext().getWaitingTime();
-		this->getProcesses().at(i).getContext().setTurnAroundTime(duration + waitingTime);
-	}
+	// for (size_t i = 1; i < this->getProcesses().size(); i++)
+	// {
+	// 	int previousDurationTime = this->getProcesses().at(i - 1).getContext().getDuration();
+	// 	int previousWaitingTime = this->getProcesses().at(i - 1).getContext().getWaitingTime();
+	// 	this->getProcesses().at(i).getContext().setWaitingTime(
+	// 		previousDurationTime + previousWaitingTime);
+	// 	int duration = this->getProcesses().at(i).getContext().getDuration();
+	// 	int waitingTime = this->getProcesses().at(i).getContext().getWaitingTime();
+	// 	this->getProcesses().at(i).getContext().setTurnAroundTime(duration + waitingTime);
+	// }
 
-	// Find average time
-	int totalWaitingTime = 0, totalTurnAroundTime = 0;
-	for (size_t i = 0; i < this->getProcesses().size(); i++)
-	{
-		totalWaitingTime = totalWaitingTime + this->getProcesses().at(i).getContext().getWaitingTime();
-		totalTurnAroundTime = totalTurnAroundTime +
-							  this->getProcesses().at(i).getContext().getTurnAroundTime();
-	}
+	// // Find average time
+	// int totalWaitingTime = 0, totalTurnAroundTime = 0;
+	// for (size_t i = 0; i < this->getProcesses().size(); i++)
+	// {
+	// 	totalWaitingTime = totalWaitingTime + this->getProcesses().at(i).getContext().getWaitingTime();
+	// 	totalTurnAroundTime = totalTurnAroundTime +
+	// 						  this->getProcesses().at(i).getContext().getTurnAroundTime();
+	// }
 
-	cout << "Average waiting time = "
-		 << (float)totalWaitingTime / (float)this->getProcesses().size();
-	cout << "\nAverage turn around time = "
-		 << (float)totalTurnAroundTime / (float)this->getProcesses().size() << "\n";
+	// cout << "Average waiting time = "
+	// 	 << (float)totalWaitingTime / (float)this->getProcesses().size();
+	// cout << "\nAverage turn around time = "
+	// 	 << (float)totalTurnAroundTime / (float)this->getProcesses().size() << "\n";
+
+	cout << this->getProcesses().at(0).getContext().getPid()
+		 << " "
+		 << this->getProcesses().at(0).getContext().getWaitingTime()
+		 << " "
+		 << this->getProcesses().at(0).getContext().getTurnAroundTime()
+		 << "\n";
+
+	// cout << this->getProcesses().at(0).getContext().getWaitingTime()
+	// 	 << " "
+	// 	 << this->getProcesses().at(0).getContext().getTurnAroundTime()
+	// 	 << "\n";
 
 	return 0;
 }
@@ -112,6 +150,8 @@ void Scheduler::findAverageWaitingTime() {}
 void Scheduler::findAverageTimesOfContextChange() {}
 
 /////////////// gets ///////////////
+
+vector<ProcessParams *> Scheduler::getRawProcesses() { return this->rawProcesses; }
 
 vector<Process> Scheduler::getProcesses() { return this->processes; }
 
@@ -151,19 +191,26 @@ bool Scheduler::doesProcessExist(pid_t _pid)
 
 /////////////// sets ///////////////
 
+void Scheduler::setRawProcesses(vector<ProcessParams *> _rawProcesses)
+{
+	this->rawProcesses = _rawProcesses;
+}
+
 void Scheduler::setProcesses(vector<Process> _processes)
 {
 	this->processes = _processes;
+	// for (size_t i = 0; i < _processes.size(); i++)
+	// {
+	// 	this->processes.push_back(_processes[i]);
+	// }
 }
-
-void Scheduler::setAlgorithm(string _algorithm)
-{
-	this->algorithm = _algorithm;
-}
+void Scheduler::setAlgorithm(string _algorithm) { this->algorithm = _algorithm; }
 
 /////////////// beautifiers ///////////////
 
-void Scheduler::prettyPrint(string _statusp1, string _statusp2, string _statusp3, string _statusp4)
+void Scheduler::prettyPrint(
+	string _statusp1, string _statusp2,
+	string _statusp3, string _statusp4)
 {
 	cout << "tempo"
 		 << "   "

@@ -11,20 +11,18 @@
 using namespace std;
 
 /*
-	Entry point.
-	Uses processParams to read file, create processes and call scheduler.
+	Represents a cpu.
 */
 class INE5412
 {
-public:
-	INE5412(/* args */);
-	~INE5412();
-	/**/
-	vector<Process> createProcesses(vector<ProcessParams *> _rawProcesses, int _qtyOfRawProcesses);
-
 private:
 	/* data */
 	ContextCPU _contextCPU;
+
+public:
+	INE5412();
+	INE5412(string _algorithm);
+	~INE5412();
 };
 
 #endif
