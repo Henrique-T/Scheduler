@@ -82,54 +82,60 @@ void Scheduler::createProcesses()
 
 int Scheduler::FCFS(/* args */)
 {
-	// Find the wait time and turn around time for each and all processes
+	this->processes.at(0).setWaitingTime(0);
+	this->processes.at(0).setTurnAroundTime(
+		this->processes.at(0).getContext().getDuration() +
+		this->processes.at(0).getContext().getWaitingTime());
 
-	/*
-		TODO:
-		I cannot use getContext().setWaitingTime() or anything like that.
-		I need to build a method that sets things by pid, I believe.
-	*/
-	this->getProcesses().at(0).getContext().setWaitingTime(10);
-	this->getProcesses().at(0).getContext().setTurnAroundTime(
-		this->getProcesses().at(0).getContext().getDuration() +
-		this->getProcesses().at(0).getContext().getWaitingTime());
+	for (size_t i = 1; i < this->getProcesses().size(); i++)
+	{
+		int previousDurationTime = this->getProcesses().at(i - 1).getContext().getDuration();
+		int previousWaitingTime = this->getProcesses().at(i - 1).getContext().getWaitingTime();
+		this->processes.at(i).setWaitingTime(
+			previousDurationTime + previousWaitingTime);
+		int duration = this->getProcesses().at(i).getContext().getDuration();
+		int waitingTime = this->getProcesses().at(i).getContext().getWaitingTime();
+		this->processes.at(i).setTurnAroundTime(duration + waitingTime);
+	}
 
-	// for (size_t i = 1; i < this->getProcesses().size(); i++)
+	// for (size_t i = 0; i < this->getProcesses().size(); i++)
 	// {
-	// 	int previousDurationTime = this->getProcesses().at(i - 1).getContext().getDuration();
-	// 	int previousWaitingTime = this->getProcesses().at(i - 1).getContext().getWaitingTime();
-	// 	this->getProcesses().at(i).getContext().setWaitingTime(
-	// 		previousDurationTime + previousWaitingTime);
-	// 	int duration = this->getProcesses().at(i).getContext().getDuration();
-	// 	int waitingTime = this->getProcesses().at(i).getContext().getWaitingTime();
-	// 	this->getProcesses().at(i).getContext().setTurnAroundTime(duration + waitingTime);
+	// 	Process process = this->getProcesses().at(i);
+	// 	cout << "duration: " << process.getContext().getDuration() << "\n";
+	// 	cout << "waiting time: " << process.getContext().getWaitingTime() << "\n";
+	// 	cout << "turnaround time: " << process.getContext().getTurnAroundTime() << "\n";
+	// 	cout << "--------------------------------------------------------"
+	// 		 << "\n";
 	// }
 
 	// // Find average time
-	// int totalWaitingTime = 0, totalTurnAroundTime = 0;
-	// for (size_t i = 0; i < this->getProcesses().size(); i++)
-	// {
-	// 	totalWaitingTime = totalWaitingTime + this->getProcesses().at(i).getContext().getWaitingTime();
-	// 	totalTurnAroundTime = totalTurnAroundTime +
-	// 						  this->getProcesses().at(i).getContext().getTurnAroundTime();
-	// }
+	int totalWaitingTime = 0, totalTurnAroundTime = 0;
+	for (size_t i = 0; i < this->getProcesses().size(); i++)
+	{
+		totalWaitingTime = totalWaitingTime + this->getProcesses().at(i).getContext().getWaitingTime();
+		totalTurnAroundTime = totalTurnAroundTime +
+							  this->getProcesses().at(i).getContext().getTurnAroundTime();
+	}
 
-	// cout << "Average waiting time = "
-	// 	 << (float)totalWaitingTime / (float)this->getProcesses().size();
-	// cout << "\nAverage turn around time = "
-	// 	 << (float)totalTurnAroundTime / (float)this->getProcesses().size() << "\n";
+	cout << "Average waiting time = "
+		 << (float)totalWaitingTime / (float)this->getProcesses().size();
+	cout << "\nAverage turn around time = "
+		 << (float)totalTurnAroundTime / (float)this->getProcesses().size() << "\n";
 
-	// cout << this->getProcesses().at(0).getContext().getPid()
-	// 	 << " "
-	// 	 << this->getProcesses().at(0).getContext().getWaitingTime()
-	// 	 << " "
-	// 	 << this->getProcesses().at(0).getContext().getTurnAroundTime()
-	// 	 << "\n";
+	for (size_t i = 0; i < this->getProcesses().size(); i++)
+	{
+		cout << this->getProcesses().at(i).getContext().getPid()
+			 << " "
+			 << this->getProcesses().at(i).getContext().getWaitingTime()
+			 << " "
+			 << this->getProcesses().at(i).getContext().getTurnAroundTime()
+			 << "\n";
 
-	// cout << this->getProcesses().at(0).getContext().getWaitingTime()
-	// 	 << " "
-	// 	 << this->getProcesses().at(0).getContext().getTurnAroundTime()
-	// 	 << "\n";
+		cout << this->getProcesses().at(i).getContext().getWaitingTime()
+			 << " "
+			 << this->getProcesses().at(i).getContext().getTurnAroundTime()
+			 << "\n";
+	}
 
 	return 0;
 }

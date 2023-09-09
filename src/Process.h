@@ -26,6 +26,28 @@ public:
 	void setPid(pid_t _pid);
 	/**/
 	void setContext(ContextProcess _context);
+	/**/
+	void setStartDate(int _startDate);
+	/**/
+	void setEndDate(int _endDate);
+	/**/
+	void setDuration(int _duration);
+	/**/
+	void setStaticPriority(int _staticPriority);
+	/**/
+	void setDynamicPriority(int _dynamicPriority);
+	/**/
+	void setCurrentState(string _currentState);
+	/**/
+	void setExecutedTimeCurrentQuantum(float _executedTimeCurrentQuantum);
+	/**/
+	void setExecutedTimeTotal(float _executedTimeTotal);
+	/**/
+	void setCreationTime(int _creationTime);
+	/**/
+	void setWaitingTime(int _waitingTime);
+	/**/
+	void setTurnAroundTime(int _turnAroundTime);
 };
 
 #endif
