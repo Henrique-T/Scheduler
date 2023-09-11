@@ -2,6 +2,7 @@
 #include "File.h"
 #include <map>
 #include <string>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -80,7 +81,7 @@ void Scheduler::createProcesses()
 
 /////////////// Scheduling Algorithms and helpers ///////////////
 
-int Scheduler::FCFS(/* args */)
+int Scheduler::FCFS()
 {
 	this->processes.at(0).setWaitingTime(0);
 	this->processes.at(0).setTurnAroundTime(
@@ -97,16 +98,6 @@ int Scheduler::FCFS(/* args */)
 		int waitingTime = this->getProcesses().at(i).getContext().getWaitingTime();
 		this->processes.at(i).setTurnAroundTime(duration + waitingTime);
 	}
-
-	// for (size_t i = 0; i < this->getProcesses().size(); i++)
-	// {
-	// 	Process process = this->getProcesses().at(i);
-	// 	cout << "duration: " << process.getContext().getDuration() << "\n";
-	// 	cout << "waiting time: " << process.getContext().getWaitingTime() << "\n";
-	// 	cout << "turnaround time: " << process.getContext().getTurnAroundTime() << "\n";
-	// 	cout << "--------------------------------------------------------"
-	// 		 << "\n";
-	// }
 
 	// // Find average time
 	int totalWaitingTime = 0, totalTurnAroundTime = 0;
@@ -140,8 +131,55 @@ int Scheduler::FCFS(/* args */)
 	return 0;
 }
 
-int Scheduler::shortestJobFirst(/* args */)
+bool Scheduler::compareDurations(const Process &a, const Process &b)
 {
+	return a.getContext().getDuration() < b.getContext().getDuration();
+}
+
+int Scheduler::shortestJobFirst()
+{
+	// Sorting processes according to their Burst Time (duration).
+	sort(this->processes.begin(), this->processes.end(), Scheduler::compareDurations);
+
+	// Calculation of Waiting Times
+	this->processes.at(0).setWaitingTime(0);
+	for (size_t i = 1; i < this->getProcesses().size(); i++)
+	{
+		int previousDurationTime = this->getProcesses().at(i - 1).getContext().getDuration();
+		int previousWaitingTime = this->getProcesses().at(i - 1).getContext().getWaitingTime();
+		this->processes.at(i).setWaitingTime(
+			previousDurationTime + previousWaitingTime);
+	}
+
+	// // Find average time
+	int totalWaitingTime = 0, totalTurnAroundTime = 0;
+	for (size_t i = 0; i < this->getProcesses().size(); i++)
+	{
+		totalWaitingTime = totalWaitingTime + this->getProcesses().at(i).getContext().getWaitingTime();
+		totalTurnAroundTime = totalTurnAroundTime +
+							  this->getProcesses().at(i).getContext().getTurnAroundTime();
+	}
+
+	// Calculation of Turn Around Time and printing the data.
+	cout << "Average waiting time = "
+		 << (float)totalWaitingTime / (float)this->getProcesses().size();
+	cout << "\nAverage turn around time = "
+		 << (float)totalTurnAroundTime / (float)this->getProcesses().size() << "\n";
+
+	for (size_t i = 0; i < this->getProcesses().size(); i++)
+	{
+		cout << this->getProcesses().at(i).getContext().getPid()
+			 << " "
+			 << this->getProcesses().at(i).getContext().getWaitingTime()
+			 << " "
+			 << this->getProcesses().at(i).getContext().getTurnAroundTime()
+			 << "\n";
+
+		cout << this->getProcesses().at(i).getContext().getWaitingTime()
+			 << " "
+			 << this->getProcesses().at(i).getContext().getTurnAroundTime()
+			 << "\n";
+	}
 	return 0;
 }
 

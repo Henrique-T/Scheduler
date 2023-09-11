@@ -36,7 +36,7 @@ public:
 	/**/
 	int getEndDate();
 	/**/
-	int getDuration();
+	int getDuration() const;
 	/**/
 	int getStaticPriority();
 	/**/

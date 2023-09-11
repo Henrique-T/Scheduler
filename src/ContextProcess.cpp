@@ -22,7 +22,7 @@ ContextProcess::~ContextProcess() {}
 pid_t ContextProcess::getPid() { return this->pid; }
 int ContextProcess::getStartDate() { return this->startDate; }
 int ContextProcess::getEndDate() { return this->endDate; }
-int ContextProcess::getDuration() { return this->duration; }
+int ContextProcess::getDuration() const { return this->duration; }
 int ContextProcess::getStaticPriority() { return this->staticPriority; }
 int ContextProcess::getDynamicPriority() { return this->dynamicPriority; }
 string ContextProcess::getCurrentState() { return this->currentState; }
