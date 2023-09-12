@@ -121,13 +121,7 @@ int Scheduler::FCFS()
 			 << " "
 			 << this->getProcesses().at(i).getContext().getTurnAroundTime()
 			 << "\n";
-
-		cout << this->getProcesses().at(i).getContext().getWaitingTime()
-			 << " "
-			 << this->getProcesses().at(i).getContext().getTurnAroundTime()
-			 << "\n";
 	}
-
 	return 0;
 }
 
@@ -140,7 +134,21 @@ int Scheduler::shortestJobFirst()
 {
 	// Sorting processes according to their Burst Time (duration).
 	sort(this->processes.begin(), this->processes.end(), Scheduler::compareDurations);
+	this->processes.at(0).setWaitingTime(0);
+	this->processes.at(0).setTurnAroundTime(
+		this->processes.at(0).getContext().getDuration() +
+		this->processes.at(0).getContext().getWaitingTime());
 
+	for (size_t i = 1; i < this->getProcesses().size(); i++)
+	{
+		int previousDurationTime = this->getProcesses().at(i - 1).getContext().getDuration();
+		int previousWaitingTime = this->getProcesses().at(i - 1).getContext().getWaitingTime();
+		this->processes.at(i).setWaitingTime(
+			previousDurationTime + previousWaitingTime);
+		int duration = this->getProcesses().at(i).getContext().getDuration();
+		int waitingTime = this->getProcesses().at(i).getContext().getWaitingTime();
+		this->processes.at(i).setTurnAroundTime(duration + waitingTime);
+	}
 	// Calculation of Waiting Times
 	this->processes.at(0).setWaitingTime(0);
 	for (size_t i = 1; i < this->getProcesses().size(); i++)
@@ -151,7 +159,7 @@ int Scheduler::shortestJobFirst()
 			previousDurationTime + previousWaitingTime);
 	}
 
-	// // Find average time
+	// Find average time
 	int totalWaitingTime = 0, totalTurnAroundTime = 0;
 	for (size_t i = 0; i < this->getProcesses().size(); i++)
 	{
@@ -171,11 +179,6 @@ int Scheduler::shortestJobFirst()
 		cout << this->getProcesses().at(i).getContext().getPid()
 			 << " "
 			 << this->getProcesses().at(i).getContext().getWaitingTime()
-			 << " "
-			 << this->getProcesses().at(i).getContext().getTurnAroundTime()
-			 << "\n";
-
-		cout << this->getProcesses().at(i).getContext().getWaitingTime()
 			 << " "
 			 << this->getProcesses().at(i).getContext().getTurnAroundTime()
 			 << "\n";
