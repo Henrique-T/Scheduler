@@ -31,6 +31,8 @@ float ContextProcess::getExecutedTimeTotal() { return this->executedTimeTotal; }
 int ContextProcess::getCreationTime() { return this->creationTime; }
 int ContextProcess::getWaitingTime() { return this->waitingTime; }
 int ContextProcess::getTurnAroundTime() { return this->turnAroundTime; }
+int ContextProcess::getInTime() { return this->inTime; }
+int ContextProcess::getOutTime() { return this->outTime; }
 
 /////////////// sets ///////////////
 
@@ -46,3 +48,5 @@ void ContextProcess::setExecutedTimeTotal(float _executedTimeTotal) { this->exec
 void ContextProcess::setCreationTime(int _creationTime) { this->creationTime = _creationTime; }
 void ContextProcess::setWaitingTime(int _waitingTime) { this->waitingTime = _waitingTime; }
 void ContextProcess::setTurnAroundTime(int _turnAroundTime) { this->turnAroundTime = _turnAroundTime; }
+void ContextProcess::setInTime(int _inTime) { this->inTime = _inTime; }
+void ContextProcess::setOutTime(int _outTime) { this->outTime = _outTime; }

@@ -17,7 +17,10 @@ class INE5412
 {
 private:
 	/* data */
-	ContextCPU _contextCPU;
+	ContextCPU contextCPU;
+	// long long stackPointer;
+	// long long programCounter;
+	// long long status;
 
 public:
 	INE5412();

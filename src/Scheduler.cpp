@@ -134,6 +134,7 @@ int Scheduler::shortestJobFirst()
 {
 	// Sorting processes according to their Burst Time (duration).
 	sort(this->processes.begin(), this->processes.end(), Scheduler::compareDurations);
+
 	this->processes.at(0).setWaitingTime(0);
 	this->processes.at(0).setTurnAroundTime(
 		this->processes.at(0).getContext().getDuration() +
@@ -149,6 +150,7 @@ int Scheduler::shortestJobFirst()
 		int waitingTime = this->getProcesses().at(i).getContext().getWaitingTime();
 		this->processes.at(i).setTurnAroundTime(duration + waitingTime);
 	}
+
 	// Calculation of Waiting Times
 	this->processes.at(0).setWaitingTime(0);
 	for (size_t i = 1; i < this->getProcesses().size(); i++)
@@ -248,6 +250,9 @@ bool Scheduler::doesProcessExist(pid_t _pid)
 	return false;
 }
 
+int Scheduler::getHeapSize() { return this->heapSize; }
+int Scheduler::getCurrentTime() { return this->currentTime; }
+
 /////////////// sets ///////////////
 
 void Scheduler::setRawProcesses(vector<ProcessParams *> _rawProcesses)
@@ -265,11 +270,57 @@ void Scheduler::setProcesses(vector<Process> _processes)
 }
 
 void Scheduler::setAlgorithm(string _algorithm) { this->algorithm = _algorithm; }
+void Scheduler::setHeapSize(int _heapSize) { this->heapSize = _heapSize; }
+void Scheduler::setCurrentTime(int _currentTime) { this->currentTime = _currentTime; }
 
 void Scheduler::insertProcess(Process _process)
 {
 	this->processes.push_back(_process);
 }
+
+void Scheduler::insertProcessToHeap(Process _process)
+{
+	int start = this->getHeapSize(), i;
+	this->heap.at(this->getHeapSize()) = _process;
+
+	if (this->heap.at(this->getHeapSize()).getContext().getInTime() == -1)
+	{
+		this->heap.at(this->getHeapSize()).setInTime(this->getCurrentTime());
+	}
+	this->setHeapSize(this->getHeapSize() + 1);
+
+	// Ordering the Heap
+	while (start != 0 &&
+		   this->heap.at((start - 1) / 2).getContext().getStaticPriority() > this->heap.at(start).getContext().getStaticPriority())
+	{
+		Process temp = this->heap.at((start - 1) / 2);
+		this->heap.at((start - 1) / 2) = this->heap.at(start);
+		this->heap.at(start) = temp;
+		start = (start - 1) / 2;
+	}
+}
+
+void Scheduler::orderHeap(int _start)
+{
+
+	// int smallest = _start;
+	// int left = 2 * _start + 1;
+	// int right = 2 * _start + 2;
+	// if (left < *heapsize && Heap[left].priority < Heap[smallest].priority)
+	// 	smallest = left;
+	// if (right < *heapsize && Heap[right].priority < Heap[smallest].priority)
+	// 	smallest = right;
+
+	// // Ordering the Heap
+	// if (smallest != _start)
+	// {
+	// 	Process temp = Heap[smallest];
+	// 	Heap[smallest] = Heap[start];
+	// 	Heap[start] = temp;
+	// 	this->orderHeap(Heap, heapsize, smallest);
+	// }
+}
+void Scheduler::extractminimum() {}
 
 /////////////// beautifiers ///////////////
 

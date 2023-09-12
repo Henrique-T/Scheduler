@@ -37,3 +37,5 @@ void Process::setExecutedTimeTotal(float _executedTimeTotal) { this->context.set
 void Process::setCreationTime(int _creationTime) { this->context.setCreationTime(_creationTime); }
 void Process::setWaitingTime(int _waitingTime) { this->context.setWaitingTime(_waitingTime); }
 void Process::setTurnAroundTime(int _turnAroundTime) { this->context.setTurnAroundTime(_turnAroundTime); }
+void Process::setInTime(int _inTime) { this->context.setInTime(_inTime); }
+void Process::setOutTime(int _outTime) { this->context.setOutTime(_outTime); }

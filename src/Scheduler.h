@@ -18,8 +18,11 @@ class Scheduler
 private:
 	/* data */
 	vector<Process> processes;
+	vector<Process> heap;
 	vector<ProcessParams *> rawProcesses;
 	string algorithm;
+	int heapSize;
+	int currentTime;
 
 public:
 	Scheduler();
@@ -38,13 +41,27 @@ public:
 	/**/
 	vector<ProcessParams *> getRawProcesses();
 	/**/
+	int getHeapSize();
+	/**/
+	int getCurrentTime();
+	/**/
 	void setRawProcesses(vector<ProcessParams *> _rawProcesses);
 	/**/
 	void setProcesses(vector<Process> _processes);
 	/**/
 	void setAlgorithm(string _algorithm);
 	/**/
+	void setHeapSize(int _heapSize);
+	/**/
+	void setCurrentTime(int _currentTime);
+	/**/
 	void insertProcess(Process _process);
+	/**/
+	void insertProcessToHeap(Process _process);
+	/**/
+	void orderHeap(int _start);
+	/**/
+	void extractminimum();
 	/**/
 	static bool compareDurations(const Process &a, const Process &b);
 	/**/

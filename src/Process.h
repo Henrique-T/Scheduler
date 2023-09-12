@@ -48,6 +48,10 @@ public:
 	void setWaitingTime(int _waitingTime);
 	/**/
 	void setTurnAroundTime(int _turnAroundTime);
+	/**/
+	void setInTime(int _inTime);
+	/**/
+	void setOutTime(int _outTime);
 };
 
 #endif
