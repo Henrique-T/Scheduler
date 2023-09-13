@@ -39,3 +39,4 @@ void Process::setWaitingTime(int _waitingTime) { this->context.setWaitingTime(_w
 void Process::setTurnAroundTime(int _turnAroundTime) { this->context.setTurnAroundTime(_turnAroundTime); }
 void Process::setInTime(int _inTime) { this->context.setInTime(_inTime); }
 void Process::setOutTime(int _outTime) { this->context.setOutTime(_outTime); }
+void Process::setResponseTime(int _responseTime) { this->context.setResponseTime(_responseTime); }

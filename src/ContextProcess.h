@@ -26,6 +26,8 @@ private:
 	int turnAroundTime;
 	int inTime;
 	int outTime;
+	int arrivalTime;
+	int responseTime;
 
 public:
 	ContextProcess();
@@ -60,6 +62,10 @@ public:
 	/**/
 	int getOutTime();
 	/**/
+	int getArrivalTime();
+	/**/
+	int getResponseTime();
+	/**/
 	void setPid(pid_t _pid);
 	/**/
 	void setStartDate(int _startDate);
@@ -87,6 +93,10 @@ public:
 	void setInTime(int _inTime);
 	/**/
 	void setOutTime(int _outTime);
+	/**/
+	void setArrivalTime(int _arrivalTime);
+	/**/
+	void setResponseTime(int _responseTime);
 };
 
 #endif

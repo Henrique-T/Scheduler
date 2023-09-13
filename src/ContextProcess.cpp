@@ -33,6 +33,8 @@ int ContextProcess::getWaitingTime() { return this->waitingTime; }
 int ContextProcess::getTurnAroundTime() { return this->turnAroundTime; }
 int ContextProcess::getInTime() { return this->inTime; }
 int ContextProcess::getOutTime() { return this->outTime; }
+int ContextProcess::getArrivalTime() { return this->arrivalTime; }
+int ContextProcess::getResponseTime() { return this->responseTime; }
 
 /////////////// sets ///////////////
 
@@ -50,3 +52,5 @@ void ContextProcess::setWaitingTime(int _waitingTime) { this->waitingTime = _wai
 void ContextProcess::setTurnAroundTime(int _turnAroundTime) { this->turnAroundTime = _turnAroundTime; }
 void ContextProcess::setInTime(int _inTime) { this->inTime = _inTime; }
 void ContextProcess::setOutTime(int _outTime) { this->outTime = _outTime; }
+void ContextProcess::setArrivalTime(int _arrivalTime) { this->arrivalTime = _arrivalTime; }
+void ContextProcess::setResponseTime(int _responseTime) { this->arrivalTime = _responseTime; }

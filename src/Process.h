@@ -52,6 +52,8 @@ public:
 	void setInTime(int _inTime);
 	/**/
 	void setOutTime(int _outTime);
+	/**/
+	void setResponseTime(int _responseTime);
 };
 
 #endif
