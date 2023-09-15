@@ -14,6 +14,10 @@ using namespace std;
 */
 class File
 {
+private:
+	ifstream myfile;
+	vector<ProcessParams *> processes;
+
 public:
 	File();
 	~File();
@@ -23,10 +27,6 @@ public:
 	void print_processes_params();
 	/**/
 	vector<ProcessParams *> getProcesses();
-
-private:
-	ifstream myfile;
-	vector<ProcessParams *> processes;
 };
 
 #endif

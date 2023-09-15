@@ -11,12 +11,10 @@ using namespace std;
 
 /*
 	Creates and manages processes and their contexts, based on a chosen algorithm.
-	The algorithm is chosen by the user through the command line.
 */
 class Scheduler
 {
 private:
-	/* data */
 	vector<Process> processes;
 	vector<Process> heap;
 	vector<ProcessParams *> rawProcesses;
@@ -26,72 +24,54 @@ private:
 
 public:
 	Scheduler();
+	/* 
+	Constructor. 
+	Reads the file and creates a list of processes of type Process.
+	Chooses what method to call based on algorithm. 
+	*/
 	Scheduler(string _algorithm);
 	~Scheduler();
 	/* Reads input file and creates a vector of processes. */
 	void createProcesses();
-	/**/
-	vector<Process> getProcesses();
-	/**/
-	Process getProcessByPid(pid_t _pid);
-	/**/
-	string getAlgorithm();
-	/**/
-	bool doesProcessExist(pid_t _pid);
-	/**/
-	vector<ProcessParams *> getRawProcesses();
-	/**/
-	int getHeapSize();
-	/**/
-	int getCurrentTime();
-	/**/
-	void setRawProcesses(vector<ProcessParams *> _rawProcesses);
-	/**/
-	void setProcesses(vector<Process> _processes);
-	/**/
-	void setAlgorithm(string _algorithm);
-	/**/
-	void setHeapSize(int _heapSize);
-	/**/
-	void setCurrentTime(int _currentTime);
-	/**/
+	/* First Come First Served algorithm */
+	int FCFS();
+	/* Shortest Job First Algorithm */
+	int shortestJobFirst();
+	/* Priority Without Preemption Algorithm */
+	int priorityWithoutPreemption();
+	/* Priority With Preemption Algorithm */
+	int priorityWithPreemption();
+	/* Round Robin With Quantum = 2s algorithm*/
+	int roundRobin();
+	/* Inserts process to main list of processes */
 	void insertProcess(Process _process);
-	/**/
+	/* Inserts process to heap */
 	void insertProcessToHeap(Process _process);
-	/**/
+	/* Orders heap based on priority */
 	void orderHeap(int _start);
-	/**/
+	/* Finds the process with highest priority */
 	Process extractminimum();
-	/**/
+	/* Checks if priority of a is less than priority of b */
 	static bool compareDurations(const Process &a, const Process &b);
-	/**/
-	static bool compareArrivalTimes(const Process &a, const Process &b);
-	/**/
+	/* Checks if creation time of a is less than creation time of b */
+	static bool compareCreationTimes(const Process &a, const Process &b);
+	/* Executes the process with the highest priority in heap */
 	void executeHighestPriorityFromHeap();
-	/* Pretty prints the final result */
+
+	bool doesProcessExist(pid_t _pid);
 	void prettyPrint(string _statusp1, string _statusp2, string _statusp3, string _statusp4);
-	/**/
-	int FCFS(/* args */);
-	/**/
-	int shortestJobFirst(/* args */);
-	/**/
-	int priorityWithoutPreemption(/* args */);
-	/**/
-	int priorityWithPreemption(/* args */);
-	/**/
-	int roundRobin(/* args */);
-	/**/
-	void findTurnAroundTimeForEach();
-	/**/
-	void findWaitingTimeForEach();
-	/**/
-	void findTotalTimesOfContextChangeForEach();
-	/**/
-	void findAverageTurnAroundTime();
-	/**/
-	void findAverageWaitingTime();
-	/**/
-	void findAverageTimesOfContextChange();
+
+	vector<Process> getProcesses();
+	vector<ProcessParams *> getRawProcesses();
+	Process getProcessByPid(pid_t _pid);
+	string getAlgorithm();
+	int getHeapSize();
+	int getCurrentTime();
+	void setRawProcesses(vector<ProcessParams *> _rawProcesses);
+	void setProcesses(vector<Process> _processes);
+	void setAlgorithm(string _algorithm);
+	void setHeapSize(int _heapSize);
+	void setCurrentTime(int _currentTime);
 };
 
 #endif

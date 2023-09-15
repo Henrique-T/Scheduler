@@ -10,7 +10,6 @@
 class Process
 {
 private:
-	/* data */
 	pid_t pid;
 	ContextProcess context;
 
@@ -54,8 +53,6 @@ public:
 	void setOutTime(int _outTime);
 	/**/
 	void setResponseTime(int _responseTime);
-	/**/
-	void setAuxDuration(int _auxDuration);
 };
 
 #endif

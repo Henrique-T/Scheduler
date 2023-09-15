@@ -11,7 +11,6 @@ using namespace std;
 class ContextProcess
 {
 private:
-	/* data */
 	pid_t pid;
 	int startDate;
 	int endDate;
@@ -19,15 +18,14 @@ private:
 	int staticPriority;
 	int dynamicPriority;
 	string currentState; // new, ready, executing, done
-	float executedTimeCurrentQuantum;
-	float executedTimeTotal;
+	int executedTimeCurrentQuantum;
+	int executedTimeTotal;
 	int creationTime;
 	int waitingTime;
 	int turnAroundTime;
 	int inTime;
 	int outTime;
 	int responseTime;
-	int auxDuration;
 
 public:
 	ContextProcess();
@@ -48,9 +46,9 @@ public:
 	/**/
 	string getCurrentState();
 	/**/
-	float getExecutedTimeCurrentQuantum();
+	int getExecutedTimeCurrentQuantum();
 	/**/
-	float getExecutedTimeTotal();
+	int getExecutedTimeTotal();
 	/**/
 	int getCreationTime();
 	/**/
@@ -63,8 +61,6 @@ public:
 	int getOutTime();
 	/**/
 	int getResponseTime();
-	/**/
-	int getAuxDuration();
 	/**/
 	void setPid(pid_t _pid);
 	/**/
@@ -80,9 +76,9 @@ public:
 	/**/
 	void setCurrentState(string _currentState);
 	/**/
-	void setExecutedTimeCurrentQuantum(float _executedTimeCurrentQuantum);
+	void setExecutedTimeCurrentQuantum(int _executedTimeCurrentQuantum);
 	/**/
-	void setExecutedTimeTotal(float _executedTimeTotal);
+	void setExecutedTimeTotal(int _executedTimeTotal);
 	/**/
 	void setCreationTime(int _creationTime);
 	/**/
@@ -95,8 +91,6 @@ public:
 	void setOutTime(int _outTime);
 	/**/
 	void setResponseTime(int _responseTime);
-	/**/
-	void setAuxDuration(int _auxDuration);
 };
 
 #endif

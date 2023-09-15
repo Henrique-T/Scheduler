@@ -6,11 +6,10 @@ Process::Process() {}
 
 Process::Process(int _creationTime, int _duration, int _priority, int _pid)
 {
-	// create and set pid (within range 0-20);
-	int range = 20;
+	/* Sets pid */
 	this->setPid(_pid);
 
-	// create and set context
+	/* Creates and sets context */
 	ContextProcess context(this->getPid(), _creationTime, _duration, _priority);
 	this->setContext(context);
 }
@@ -40,4 +39,3 @@ void Process::setTurnAroundTime(int _turnAroundTime) { this->context.setTurnArou
 void Process::setInTime(int _inTime) { this->context.setInTime(_inTime); }
 void Process::setOutTime(int _outTime) { this->context.setOutTime(_outTime); }
 void Process::setResponseTime(int _responseTime) { this->context.setResponseTime(_responseTime); }
-void Process::setAuxDuration(int _auxDuration) { this->context.setAuxDuration(_auxDuration); }
