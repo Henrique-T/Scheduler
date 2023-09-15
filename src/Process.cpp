@@ -4,11 +4,11 @@
 
 Process::Process() {}
 
-Process::Process(int _creationTime, int _duration, int _priority)
+Process::Process(int _creationTime, int _duration, int _priority, int _pid)
 {
 	// create and set pid (within range 0-20);
 	int range = 20;
-	this->setPid(rand() % range);
+	this->setPid(_pid);
 
 	// create and set context
 	ContextProcess context(this->getPid(), _creationTime, _duration, _priority);

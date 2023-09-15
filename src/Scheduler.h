@@ -68,8 +68,6 @@ public:
 	static bool compareArrivalTimes(const Process &a, const Process &b);
 	/**/
 	void executeHighestPriorityFromHeap();
-	/**/
-	void manage();
 	/* Pretty prints the final result */
 	void prettyPrint(string _statusp1, string _statusp2, string _statusp3, string _statusp4);
 	/**/

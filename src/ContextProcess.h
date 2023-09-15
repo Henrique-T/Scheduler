@@ -26,7 +26,6 @@ private:
 	int turnAroundTime;
 	int inTime;
 	int outTime;
-	int arrivalTime;
 	int responseTime;
 	int auxDuration;
 
@@ -63,8 +62,6 @@ public:
 	/**/
 	int getOutTime();
 	/**/
-	int getArrivalTime();
-	/**/
 	int getResponseTime();
 	/**/
 	int getAuxDuration();
@@ -96,8 +93,6 @@ public:
 	void setInTime(int _inTime);
 	/**/
 	void setOutTime(int _outTime);
-	/**/
-	void setArrivalTime(int _arrivalTime);
 	/**/
 	void setResponseTime(int _responseTime);
 	/**/

@@ -16,7 +16,7 @@ private:
 
 public:
 	Process();
-	Process(int _creationTime, int _duration, int _priority);
+	Process(int _creationTime, int _duration, int _priority, int _pid);
 	~Process();
 	/**/
 	pid_t getPid();
