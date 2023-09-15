@@ -12,16 +12,16 @@ class Process
 private:
 	/* data */
 	pid_t pid;
-	ContextProcess context;
 
 public:
+	ContextProcess context;
 	Process();
-	Process(int _creationTime, int _duration, int _priority);
+	Process(int _creationTime, int _duration, int _priority, int _pid);
 	~Process();
 	/**/
 	pid_t getPid();
 	/**/
-	ContextProcess getContext() const;
+	ContextProcess getContext();
 	/**/
 	void setPid(pid_t _pid);
 	/**/
@@ -41,9 +41,11 @@ public:
 	/**/
 	void setCurrentState(string _currentState);
 	/**/
-	void setExecutedTimeCurrentQuantum(float _executedTimeCurrentQuantum);
+	void setExecutedTimeCurrentQuantum(int _executedTimeCurrentQuantum);
 	/**/
-	void setExecutedTimeTotal(float _executedTimeTotal);
+	void setExecutedTimeTotal(int _executedTimeTotal);
+	/**/
+	void addExecutedTime(int &_executedTime);
 	/**/
 	void setCreationTime(int _creationTime);
 	/**/

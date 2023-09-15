@@ -11,9 +11,9 @@ using namespace std;
 template <typename T>
     std::string to_string(T value)
     {
-      std::ostringstream os ;
-      os << value ;
-      return os.str() ;
+      std::ostringstream os;
+      os << value;
+      return os.str();
     }
 
 Scheduler::Scheduler() {}
@@ -85,7 +85,8 @@ void Scheduler::createProcesses()
 		Process process(
 			currentRawProcess->getCreationTime(),
 			currentRawProcess->getDuration(),
-			currentRawProcess->getPriority());
+			currentRawProcess->getPriority(),
+			i);
 		this->insertProcess(process);
 	}
 }
@@ -136,15 +137,15 @@ int Scheduler::FCFS()
 	return 0;
 }
 
-bool Scheduler::compareDurations(const Process &a, const Process &b)
-{
-	return a.getContext().getDuration() < b.getContext().getDuration();
-}
+// bool Scheduler::compareDurations(const Process &a, const Process &b)
+// {
+// 	return a.getContext().getDuration() < b.getContext().getDuration();
+// }
 
-bool compareArrivalTimes(const Process &a, const Process &b)
-{
-	return a.getContext().getArrivalTime() < b.getContext().getArrivalTime();
-}
+// bool compareArrivalTimes(const Process &a, const Process &b)
+// {
+// 	return a.getContext().getArrivalTime() < b.getContext().getArrivalTime();
+// }
 
 void Scheduler::executeHighestPriorityFromHeap()
 {
@@ -177,66 +178,66 @@ void Scheduler::executeHighestPriorityFromHeap()
 
 void Scheduler::manage()
 {
-	sort(array, array + n, compare);
+	// sort(array, array + n, compare);
 
-	int totalwaitingtime = 0, totalbursttime = 0,
-		totalturnaroundtime = 0, i, insertedprocess = 0,
-		heapsize = 0, currentTime = array[0].arrivalTime,
-		totalresponsetime = 0;
+	// int totalwaitingtime = 0, totalbursttime = 0,
+	// 	totalturnaroundtime = 0, i, insertedprocess = 0,
+	// 	heapsize = 0, currentTime = array[0].arrivalTime,
+	// 	totalresponsetime = 0;
 
-	Process Heap[4 * n];
+	// Process Heap[4 * n];
 
-	// Calculating the total burst time
-	// of the processes
-	for (int i = 0; i < n; i++)
-	{
-		totalbursttime += array[i].burstTime;
-		array[i].tempburstTime = array[i].burstTime;
-	}
+	// // Calculating the total burst time
+	// // of the processes
+	// for (int i = 0; i < n; i++)
+	// {
+	// 	totalbursttime += array[i].burstTime;
+	// 	array[i].tempburstTime = array[i].burstTime;
+	// }
 
-	// Inserting the processes in Heap
-	// according to arrival time
-	do
-	{
-		if (insertedprocess != n)
-		{
-			for (i = 0; i < n; i++)
-			{
-				if (array[i].arrivalTime == currentTime)
-				{
-					++insertedprocess;
-					array[i].intime = -1;
-					array[i].responsetime = -1;
-					insert(Heap, array[i],
-						   &heapsize, ¤tTime);
-				}
-			}
-		}
-		scheduling(Heap, array, n,
-				   &heapsize, ¤tTime);
-		++currentTime;
-		if (heapsize == 0 && insertedprocess == n)
-			break;
-	} while (1);
+	// // Inserting the processes in Heap
+	// // according to arrival time
+	// do
+	// {
+	// 	if (insertedprocess != n)
+	// 	{
+	// 		for (i = 0; i < n; i++)
+	// 		{
+	// 			if (array[i].arrivalTime == currentTime)
+	// 			{
+	// 				++insertedprocess;
+	// 				array[i].intime = -1;
+	// 				array[i].responsetime = -1;
+	// 				insert(Heap, array[i],
+	// 					   &heapsize, ¤tTime);
+	// 			}
+	// 		}
+	// 	}
+	// 	scheduling(Heap, array, n,
+	// 			   &heapsize, ¤tTime);
+	// 	++currentTime;
+	// 	if (heapsize == 0 && insertedprocess == n)
+	// 		break;
+	// } while (1);
 
-	for (int i = 0; i < n; i++)
-	{
-		totalresponsetime += array[i].responsetime;
-		totalwaitingtime += (array[i].outtime - array[i].intime - array[i].tempburstTime);
-		totalbursttime += array[i].burstTime;
-	}
-	printf("Average waiting time = %f\n",
-		   ((float)totalwaitingtime / (float)n));
-	printf("Average response time =%f\n",
-		   ((float)totalresponsetime / (float)n));
-	printf("Average turn around time = %f\n",
-		   ((float)(totalwaitingtime + totalbursttime) / (float)n));
+	// for (int i = 0; i < n; i++)
+	// {
+	// 	totalresponsetime += array[i].responsetime;
+	// 	totalwaitingtime += (array[i].outtime - array[i].intime - array[i].tempburstTime);
+	// 	totalbursttime += array[i].burstTime;
+	// }
+	// printf("Average waiting time = %f\n",
+	// 	   ((float)totalwaitingtime / (float)n));
+	// printf("Average response time =%f\n",
+	// 	   ((float)totalresponsetime / (float)n));
+	// printf("Average turn around time = %f\n",
+	// 	   ((float)(totalwaitingtime + totalbursttime) / (float)n));
 }
 
 int Scheduler::shortestJobFirst()
 {
 	// Sorting processes according to their Burst Time (duration).
-	sort(this->processes.begin(), this->processes.end(), Scheduler::compareDurations);
+	//sort(this->processes.begin(), this->processes.end(), Scheduler::compareDurations);
 
 	this->processes.at(0).setWaitingTime(0);
 	this->processes.at(0).setTurnAroundTime(
@@ -301,69 +302,63 @@ int Scheduler::priorityWithPreemption(/* args */)
 	return 0;
 }
 
-int Scheduler::roundRobin(/* args */)
+int Scheduler::roundRobin()
 {
-	// All tasks take their set turn around time  to finish
-	// Total turn around time is calculated by the sum of all processes turn around time % 2 (since quantum = 2s)
-	// So each iteration will count as one quantum, and consume 2s out of the first process(es) in queue
-	int contextSwitches = 0;
-	int totalDurationTime =  0;
-	Process dummyProcess = Process();
+	//int contextSwitches = 0;
+	int currentTime = 0;
+	vector<Process> queue = this->getProcessesCreatedByTime(currentTime);
 
-	// Since there is no priority, the base queue will be the same as the associated list of processes
-	vector<Process> queue;
-
-	for (size_t i = 0; i < this->getProcesses().size(); i++)
+	// Time abstraction - every iteration here is the passage of one second
+	Process currentProcess = queue.at(0);
+	Process actualProcess = this->getProcessByPid(currentProcess.getPid());
+	
+	while (queue.size() > 0 && currentTime < 30)
 	{
-		queue.push_back(this->getProcesses().at(i)); // Adds process to queue
-		totalDurationTime = totalDurationTime +
-							  this->getProcesses().at(i).getContext().getDuration();
-	}
-	totalDurationTime = totalDurationTime / 2 + (totalDurationTime % 2 != 0);
+		bool isFinalPartOfQuantum = currentTime % 2 != 0;
 
-	for (int i = 0; i < totalDurationTime; i++)
-	{
-		// Popping first element
-		Process currentProcess = queue.front();
-		queue.erase(queue.begin());
-		// These are copies of processes, meaning we can manipulate their values 
-
-		int timeLeftToExecute = currentProcess.getContext().getDuration() - currentProcess.getContext().getExecutedTimeTotal();
+		if (currentTime > 0) {
+			vector<Process> createdProcesses = this->getProcessesCreatedByTime(currentTime);
+			if (createdProcesses.size() > 0) {
+				for (size_t i = 0; i < createdProcesses.size(); i++) {
+					queue.push_back(createdProcesses.at(i));
+				}
+			}
+		}
+		
+		// Getting first element only at beginning of quantums
+		Process currentProcess = queue.at(0);
 		Process actualProcess = this->getProcessByPid(currentProcess.getPid());
 		
-		if (timeLeftToExecute > 2) {
-			// If time left is bigger than quantum, this process will consume the entire quantum by itself, 
-			// and will return to the end of the queue
-			currentProcess.setExecutedTimeTotal(currentProcess.getContext().getExecutedTimeTotal() + 2);
-			this->printRow(i, actualProcess, dummyProcess);
-			this->printRow(i + 1, actualProcess, dummyProcess);
-			queue.push_back(currentProcess);
+		cout << "Current pid: " << actualProcess.getPid() << endl;
+		cout << "Executed time: " << actualProcess.context.executedTimeTotal << endl;
 
-		} else if (timeLeftToExecute == 2) {
-			// If time left to execute is exactly two, the process will also consume the entire quantum, and will be set to done
-			this->printRow(i, currentProcess);
-			this->printRow(i + 1, currentProcess, dummyProcess);
-			actualProcess.setDone();
-		} else {
-			// If time left to execute is less than two, the process consume one quantum and the next process will consume the other one
-			this->printRow(i, currentProcess, dummyProcess);
-			actualProcess.setDone();
+		actualProcess.context.executedTimeTotal++;
 
-			// Gets the next process in line
-			Process nextProcess = queue.front();
+		int timeLeftToExecute = (actualProcess.getContext().getDuration()) - (actualProcess.getContext().getExecutedTimeTotal());
+		cout << "  Time left: " << timeLeftToExecute << endl;
+		printf("\n");
+
+		if (timeLeftToExecute == 1) {
+			printf("Vai acabar");
+			// Means that process only has one second left to be done, and it won't be added at the end of the queue
+			
+			actualProcess.setDone();
+			this->printRow(currentTime, actualProcess.getPid(), -1);
+			// Only actually 'pop' if the process is done
 			queue.erase(queue.begin());
-
-			int timeLeftToExecuteNextProcess = nextProcess.getContext().getDuration() - nextProcess.getContext().getExecutedTimeTotal();
-
-			if (timeLeftToExecute == 1) {
-				this->printRow(i + 1, nextProcess, dummyProcess);
-				this->getProcessByPid(nextProcess.getPid()).setDone();
-			} else {
-				nextProcess.setExecutedTimeTotal(nextProcess.getContext().getExecutedTimeTotal() + 1);
-				queue.push_back(nextProcess);
-				this->printRow(i + 1, nextProcess, dummyProcess);
+		} else {
+			// Means will need more than this second to be finished
+			this->printRow(currentTime, actualProcess.getPid(), -1);
+			//actualProcess.addExecutedTime(1);
+			cout << "Executed time: " << actualProcess.context.executedTimeTotal << endl;
+			
+			if (isFinalPartOfQuantum) {
+				// If this is the end of a quantum, this process will be sent back to the list
+				queue.erase(queue.begin());
+				queue.push_back(currentProcess);
 			}
-		}		
+		}
+		currentTime++;
 	}
 
 	return 0;
@@ -386,6 +381,7 @@ Process Scheduler::getProcessByPid(pid_t _pid)
 {
 	if (!this->doesProcessExist(_pid))
 	{
+		printf("Process does not exist");
 		throw "Process does not exist";
 	}
 
@@ -399,6 +395,21 @@ Process Scheduler::getProcessByPid(pid_t _pid)
 	}
 	Process n;
 	return n; // returning an empty process may be dangerous.
+}
+
+vector<Process> Scheduler::getProcessesCreatedByTime(int _currentTime)
+{
+	vector<Process> createdProcesses;
+	int size = this->getProcesses().size();
+	for (int i = 0; i < size; i++)
+	{
+		Process currentProcess = this->processes.at(i);
+		if (currentProcess.getContext().getCreationTime() == _currentTime) 
+		{
+			createdProcesses.push_back(currentProcess);
+		}
+	}
+	return createdProcesses; 
 }
 
 string Scheduler::getAlgorithm() { return this->algorithm; }
@@ -525,7 +536,7 @@ void Scheduler::printHeaders()
 }
 
 void Scheduler::printRow(
-	int _currentTime, Process executingProcess, Process preemptedProcess
+	int _currentTime, int _executingProcessPid, int _preemptedProcessPid
 )
 {
 	// Symbols
@@ -542,16 +553,12 @@ void Scheduler::printRow(
 	{
 		int currentProcessPid = this->processes.at(i).getPid();
 		Process currentProcess = this->processes.at(i);
-		if (currentProcessPid == executingProcess.getPid()) {
+		if (currentProcessPid == _executingProcessPid) {
 			finalStr.append(hashtag);
-		} else if (currentProcessPid == preemptedProcess.getPid() || currentProcess.getContext().getCurrentState() == "Ready") {
+		} else if (currentProcessPid == _preemptedProcessPid || currentProcess.getContext().getCurrentState() == "Ready") {
 			finalStr.append(doubleDash);
 		} else {
 			finalStr.append(emptySpace);
-			// Process currentProcess = this->processes.at(i);
-			// if (currentProcess.getContext().getCurrentState() == "DONE") {
-			// 	finalStr.append(emptySpace);
-			// }
 		}
 	}
 	finalStr.append("\n");

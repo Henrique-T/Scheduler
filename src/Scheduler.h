@@ -35,6 +35,8 @@ public:
 	/**/
 	Process getProcessByPid(pid_t _pid);
 	/**/
+	vector<Process> getProcessesCreatedByTime(int _currentTime);
+	/**/
 	string getAlgorithm();
 	/**/
 	bool doesProcessExist(pid_t _pid);
@@ -73,7 +75,7 @@ public:
 	/* Pretty prints the final result */
 	void printHeaders();
 	/* Pretty prints the final result */
-	void printRow(int _currentTime, Process executingProcess, Process preemptedProces = Process());
+	void printRow(int _currentTime, int _executingProcessPid, int _preemptedProcessPid);
 	/* Pretty prints the final result */
 	void prettyPrint(string _statusp1, string _statusp2, string _statusp3, string _statusp4);
 	/**/
