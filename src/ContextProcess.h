@@ -28,6 +28,7 @@ private:
 	int outTime;
 	int arrivalTime;
 	int responseTime;
+	int auxDuration;
 
 public:
 	ContextProcess();
@@ -66,6 +67,8 @@ public:
 	/**/
 	int getResponseTime();
 	/**/
+	int getAuxDuration();
+	/**/
 	void setPid(pid_t _pid);
 	/**/
 	void setStartDate(int _startDate);
@@ -97,6 +100,8 @@ public:
 	void setArrivalTime(int _arrivalTime);
 	/**/
 	void setResponseTime(int _responseTime);
+	/**/
+	void setAuxDuration(int _auxDuration);
 };
 
 #endif

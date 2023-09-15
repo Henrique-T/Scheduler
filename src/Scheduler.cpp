@@ -16,6 +16,7 @@ Scheduler::Scheduler(string _algorithm)
 	this->setRawProcesses(f.getProcesses());
 	this->createProcesses();
 	this->setAlgorithm(_algorithm);
+	this->setHeapSize(0);
 
 	// for (size_t i = 0; i < this->getProcesses().size(); i++)
 	// {
@@ -130,7 +131,7 @@ bool Scheduler::compareDurations(const Process &a, const Process &b)
 	return a.getContext().getDuration() < b.getContext().getDuration();
 }
 
-bool compareArrivalTimes(const Process &a, const Process &b)
+bool Scheduler::compareArrivalTimes(const Process &a, const Process &b)
 {
 	return a.getContext().getArrivalTime() < b.getContext().getArrivalTime();
 }
@@ -140,86 +141,89 @@ void Scheduler::executeHighestPriorityFromHeap()
 	if (this->getHeapSize() == 0)
 		return;
 
-	Process min = this->extractminimum();
-	min.setOutTime(this->getCurrentTime() + 1);
-	min.setDuration(min.getContext().getDuration() - 1);
-	printf("process id = %d current time = %d\n",
-		   min.getPid(), this->getCurrentTime());
+	// Process min = this->extractminimum();
+	// min.setOutTime(this->getCurrentTime() + 1);
+	// min.setDuration(min.getContext().getDuration() - 1);
+	// printf("process id = %d current time = %d\n",
+	// 	   min.getPid(), this->getCurrentTime());
 
-	// If the process is not yet finished
-	// insert it back into the Heap*/
-	if (min.getContext().getDuration() > 0)
-	{
-		this->insertProcessToHeap(min);
-		return;
-	}
+	// // If the process is not yet finished
+	// // insert it back into the Heap*/
+	// if (min.getContext().getDuration() > 0)
+	// {
+	// 	this->insertProcessToHeap(min);
+	// 	return;
+	// }
 
-	for (size_t i = 0; i < this->getProcesses().size(); i++)
-	{
-		if (this->getProcesses().at(i).getPid() == min.getPid())
-		{
-			this->getProcesses().at(i) = min;
-			break;
-		}
-	}
+	// for (size_t i = 0; i < this->getProcesses().size(); i++)
+	// {
+	// 	if (this->getProcesses().at(i).getPid() == min.getPid())
+	// 	{
+	// 		this->getProcesses().at(i) = min;
+	// 		break;
+	// 	}
+	// }
 }
 
 void Scheduler::manage()
 {
-	sort(array, array + n, compare);
+	// for (size_t i = 0; i < this->getProcesses().size(); i++)
+	// {
+	// 	cout << this->getProcesses().at(i).getPid()
+	// 		 << " "
+	// 		 << this->getProcesses().at(i).getContext().getArrivalTime()
+	// 		 << "\n";
+	// }
+	// cout << "-----------------------------"
+	// 	 << "\n";
+	sort(this->processes.begin(), this->processes.end(), Scheduler::compareArrivalTimes);
 
 	int totalwaitingtime = 0, totalbursttime = 0,
-		totalturnaroundtime = 0, i, insertedprocess = 0,
-		heapsize = 0, currentTime = array[0].arrivalTime,
+		insertedprocess = 0,
+		heapsize = 0, currentTime = this->getProcesses().at(0).getContext().getArrivalTime(),
 		totalresponsetime = 0;
 
-	Process Heap[4 * n];
-
-	// Calculating the total burst time
-	// of the processes
-	for (int i = 0; i < n; i++)
+	// // Calculating the total burst time of the processes
+	for (size_t i = 0; i < this->getProcesses().size(); i++)
 	{
-		totalbursttime += array[i].burstTime;
-		array[i].tempburstTime = array[i].burstTime;
+		totalbursttime += this->getProcesses().at(i).getContext().getDuration();
+		this->processes.at(i).setAuxDuration(this->getProcesses().at(i).getContext().getDuration());
 	}
 
-	// Inserting the processes in Heap
-	// according to arrival time
+	// Inserting the processes in Heap according to arrival time
 	do
 	{
-		if (insertedprocess != n)
+		if (insertedprocess != (int)this->getProcesses().size())
 		{
-			for (i = 0; i < n; i++)
+			for (size_t i = 0; i < this->getProcesses().size(); i++)
 			{
-				if (array[i].arrivalTime == currentTime)
+				if (this->getProcesses().at(i).getContext().getArrivalTime() == currentTime)
 				{
 					++insertedprocess;
-					array[i].intime = -1;
-					array[i].responsetime = -1;
-					insert(Heap, array[i],
-						   &heapsize, ¤tTime);
+					this->getProcesses().at(i).setInTime(-1);
+					this->getProcesses().at(i).setResponseTime(-1);
+					this->insertProcessToHeap(this->getProcesses().at(i));
 				}
 			}
 		}
-		scheduling(Heap, array, n,
-				   &heapsize, ¤tTime);
+		this->executeHighestPriorityFromHeap();
 		++currentTime;
-		if (heapsize == 0 && insertedprocess == n)
+		if (heapsize == 0 && insertedprocess == (int)this->getProcesses().size())
 			break;
 	} while (1);
 
-	for (int i = 0; i < n; i++)
+	for (size_t i = 0; i < this->getProcesses().size(); i++)
 	{
-		totalresponsetime += array[i].responsetime;
-		totalwaitingtime += (array[i].outtime - array[i].intime - array[i].tempburstTime);
-		totalbursttime += array[i].burstTime;
+		totalresponsetime += this->getProcesses().at(i).getContext().getResponseTime();
+		totalwaitingtime += (this->getProcesses().at(i).getContext().getOutTime() - this->getProcesses().at(i).getContext().getInTime() - this->getProcesses().at(i).getContext().getAuxDuration());
+		totalbursttime += this->getProcesses().at(i).getContext().getDuration();
 	}
 	printf("Average waiting time = %f\n",
-		   ((float)totalwaitingtime / (float)n));
+		   ((float)totalwaitingtime / (float)this->getProcesses().size()));
 	printf("Average response time =%f\n",
-		   ((float)totalresponsetime / (float)n));
+		   ((float)totalresponsetime / (float)this->getProcesses().size()));
 	printf("Average turn around time = %f\n",
-		   ((float)(totalwaitingtime + totalbursttime) / (float)n));
+		   ((float)(totalwaitingtime + totalbursttime) / (float)this->getProcesses().size()));
 }
 
 int Scheduler::shortestJobFirst()
@@ -287,6 +291,7 @@ int Scheduler::priorityWithoutPreemption(/* args */)
 
 int Scheduler::priorityWithPreemption(/* args */)
 {
+	this->manage();
 	return 0;
 }
 
@@ -355,10 +360,6 @@ void Scheduler::setRawProcesses(vector<ProcessParams *> _rawProcesses)
 void Scheduler::setProcesses(vector<Process> _processes)
 {
 	this->processes = _processes;
-	// for (size_t i = 0; i < _processes.size(); i++)
-	// {
-	// 	this->processes.push_back(_processes[i]);
-	// }
 }
 
 void Scheduler::setAlgorithm(string _algorithm) { this->algorithm = _algorithm; }
@@ -367,14 +368,14 @@ void Scheduler::setCurrentTime(int _currentTime) { this->currentTime = _currentT
 
 void Scheduler::insertProcess(Process _process)
 {
+	// TODO: change process status to "ready"
 	this->processes.push_back(_process);
 }
 
 void Scheduler::insertProcessToHeap(Process _process)
 {
-	int start = this->getHeapSize(), i;
-	this->heap.at(this->getHeapSize()) = _process;
-
+	int start = this->getHeapSize();
+	this->heap.insert(this->heap.begin(), _process);
 	if (this->heap.at(this->getHeapSize()).getContext().getInTime() == -1)
 	{
 		this->heap.at(this->getHeapSize()).setInTime(this->getCurrentTime());
@@ -394,15 +395,16 @@ void Scheduler::insertProcessToHeap(Process _process)
 
 void Scheduler::orderHeap(int _start)
 {
-
 	int smallest = _start;
 	int left = 2 * _start + 1;
 	int right = 2 * _start + 2;
+
 	if (left < this->getHeapSize() &&
 		this->heap.at(left).getContext().getStaticPriority() < this->heap.at(smallest).getContext().getStaticPriority())
 	{
 		smallest = left;
 	}
+
 	if (right < this->getHeapSize() &&
 		this->heap.at(left).getContext().getStaticPriority() < this->heap.at(smallest).getContext().getStaticPriority())
 	{
@@ -418,15 +420,18 @@ void Scheduler::orderHeap(int _start)
 		this->orderHeap(smallest);
 	}
 }
+
 Process Scheduler::extractminimum()
 {
-	// Process min = Heap[0];
 	Process min = this->heap.at(0);
+
 	if (min.getContext().getResponseTime() == -1)
 	{
 		min.setResponseTime(this->getCurrentTime() - min.getContext().getArrivalTime());
 	}
+
 	this->setHeapSize(this->getHeapSize() - 1);
+
 	if (this->getHeapSize() >= 1)
 	{
 		this->heap.at(0) = this->heap.at(this->getHeapSize());

@@ -1,4 +1,5 @@
 #include "ContextProcess.h"
+#include <cstdlib>
 
 ContextProcess::ContextProcess() {}
 
@@ -9,6 +10,7 @@ ContextProcess::ContextProcess(int _pid, int _creationTime, int _duration, int _
 	this->setDuration(_duration);
 	this->setStaticPriority(_priority);
 	this->setCurrentState("novo");
+	this->setArrivalTime(rand() % 20);
 	// this->setTurnAroundTime(0);
 	// this->setWaitingTime(0);
 
@@ -35,6 +37,7 @@ int ContextProcess::getInTime() { return this->inTime; }
 int ContextProcess::getOutTime() { return this->outTime; }
 int ContextProcess::getArrivalTime() { return this->arrivalTime; }
 int ContextProcess::getResponseTime() { return this->responseTime; }
+int ContextProcess::getAuxDuration() { return this->auxDuration; }
 
 /////////////// sets ///////////////
 
@@ -54,3 +57,4 @@ void ContextProcess::setInTime(int _inTime) { this->inTime = _inTime; }
 void ContextProcess::setOutTime(int _outTime) { this->outTime = _outTime; }
 void ContextProcess::setArrivalTime(int _arrivalTime) { this->arrivalTime = _arrivalTime; }
 void ContextProcess::setResponseTime(int _responseTime) { this->arrivalTime = _responseTime; }
+void ContextProcess::setAuxDuration(int _auxDuration) { this->auxDuration = _auxDuration; }

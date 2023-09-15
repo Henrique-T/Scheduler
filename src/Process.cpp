@@ -40,3 +40,4 @@ void Process::setTurnAroundTime(int _turnAroundTime) { this->context.setTurnArou
 void Process::setInTime(int _inTime) { this->context.setInTime(_inTime); }
 void Process::setOutTime(int _outTime) { this->context.setOutTime(_outTime); }
 void Process::setResponseTime(int _responseTime) { this->context.setResponseTime(_responseTime); }
+void Process::setAuxDuration(int _auxDuration) { this->context.setAuxDuration(_auxDuration); }

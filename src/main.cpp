@@ -7,6 +7,6 @@ int main()
 {
 	printf("TEST\n");
 	// Create an instance of INE5412 or any other cpu.
-	INE5412 cpu("shortestJobFirst");
+	INE5412 cpu("priorityWithPreemption");
 	return 1;
 }
