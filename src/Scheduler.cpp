@@ -257,11 +257,11 @@ int Scheduler::priorityWithPreemption(/* args */)
 
 	this->setCurrentTime(this->getProcesses().at(0).getContext().getCreationTime());
 
-	// Calculating the total burst time of the processes
+	// Calculating the total duration of the processes
 	for (size_t i = 0; i < this->getProcesses().size(); i++)
 	{
 		totalDurationTime += this->getProcesses().at(i).getContext().getDuration();
-		this->processes.at(i).setAuxDuration(this->getProcesses().at(i).getContext().getDuration());
+		this->processes.at(i).setDuration(this->getProcesses().at(i).getContext().getDuration());
 	}
 
 	// Inserting the processes in Heap according to creation time
@@ -283,7 +283,7 @@ int Scheduler::priorityWithPreemption(/* args */)
 		this->executeHighestPriorityFromHeap();
 		this->setCurrentTime(this->getCurrentTime() + 1);
 		//break;
-		if (insertedprocess == (int)this->getProcesses().size())
+		if (this->getHeapSize() == 0 && insertedprocess == (int)this->getProcesses().size())
 			break;
 	} while (1);
 
