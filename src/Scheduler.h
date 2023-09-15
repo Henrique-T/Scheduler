@@ -71,6 +71,10 @@ public:
 	/**/
 	void manage();
 	/* Pretty prints the final result */
+	void printHeaders();
+	/* Pretty prints the final result */
+	void printRow(int _currentTime, Process executingProcess, Process preemptedProces = Process());
+	/* Pretty prints the final result */
 	void prettyPrint(string _statusp1, string _statusp2, string _statusp3, string _statusp4);
 	/**/
 	int FCFS(/* args */);

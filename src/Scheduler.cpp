@@ -2,9 +2,19 @@
 #include "File.h"
 #include <map>
 #include <string>
+#include <sstream>
 #include <bits/stdc++.h>
 
 using namespace std;
+
+// Used to convert any value to strings
+template <typename T>
+    std::string to_string(T value)
+    {
+      std::ostringstream os ;
+      os << value ;
+      return os.str() ;
+    }
 
 Scheduler::Scheduler() {}
 
@@ -16,6 +26,7 @@ Scheduler::Scheduler(string _algorithm)
 	this->setRawProcesses(f.getProcesses());
 	this->createProcesses();
 	this->setAlgorithm(_algorithm);
+	this->printHeaders();
 
 	// for (size_t i = 0; i < this->getProcesses().size(); i++)
 	// {
@@ -292,6 +303,69 @@ int Scheduler::priorityWithPreemption(/* args */)
 
 int Scheduler::roundRobin(/* args */)
 {
+	// All tasks take their set turn around time  to finish
+	// Total turn around time is calculated by the sum of all processes turn around time % 2 (since quantum = 2s)
+	// So each iteration will count as one quantum, and consume 2s out of the first process(es) in queue
+	int contextSwitches = 0;
+	int totalDurationTime =  0;
+	Process dummyProcess = Process();
+
+	// Since there is no priority, the base queue will be the same as the associated list of processes
+	vector<Process> queue;
+
+	for (size_t i = 0; i < this->getProcesses().size(); i++)
+	{
+		queue.push_back(this->getProcesses().at(i)); // Adds process to queue
+		totalDurationTime = totalDurationTime +
+							  this->getProcesses().at(i).getContext().getDuration();
+	}
+	totalDurationTime = totalDurationTime / 2 + (totalDurationTime % 2 != 0);
+
+	for (int i = 0; i < totalDurationTime; i++)
+	{
+		// Popping first element
+		Process currentProcess = queue.front();
+		queue.erase(queue.begin());
+		// These are copies of processes, meaning we can manipulate their values 
+
+		int timeLeftToExecute = currentProcess.getContext().getDuration() - currentProcess.getContext().getExecutedTimeTotal();
+		Process actualProcess = this->getProcessByPid(currentProcess.getPid());
+		
+		if (timeLeftToExecute > 2) {
+			// If time left is bigger than quantum, this process will consume the entire quantum by itself, 
+			// and will return to the end of the queue
+			currentProcess.setExecutedTimeTotal(currentProcess.getContext().getExecutedTimeTotal() + 2);
+			this->printRow(i, actualProcess, dummyProcess);
+			this->printRow(i + 1, actualProcess, dummyProcess);
+			queue.push_back(currentProcess);
+
+		} else if (timeLeftToExecute == 2) {
+			// If time left to execute is exactly two, the process will also consume the entire quantum, and will be set to done
+			this->printRow(i, currentProcess);
+			this->printRow(i + 1, currentProcess, dummyProcess);
+			actualProcess.setDone();
+		} else {
+			// If time left to execute is less than two, the process consume one quantum and the next process will consume the other one
+			this->printRow(i, currentProcess, dummyProcess);
+			actualProcess.setDone();
+
+			// Gets the next process in line
+			Process nextProcess = queue.front();
+			queue.erase(queue.begin());
+
+			int timeLeftToExecuteNextProcess = nextProcess.getContext().getDuration() - nextProcess.getContext().getExecutedTimeTotal();
+
+			if (timeLeftToExecute == 1) {
+				this->printRow(i + 1, nextProcess, dummyProcess);
+				this->getProcessByPid(nextProcess.getPid()).setDone();
+			} else {
+				nextProcess.setExecutedTimeTotal(nextProcess.getContext().getExecutedTimeTotal() + 1);
+				queue.push_back(nextProcess);
+				this->printRow(i + 1, nextProcess, dummyProcess);
+			}
+		}		
+	}
+
 	return 0;
 }
 
@@ -436,6 +510,54 @@ Process Scheduler::extractminimum()
 }
 
 /////////////// beautifiers ///////////////
+
+void Scheduler::printHeaders()
+{
+	string finalStr = "tempo";
+	for (size_t i = 0; i < this->processes.size(); i++)
+	{
+		string currentIndex = to_string(i);
+		finalStr.append(" P" + currentIndex);
+	}
+	finalStr.append("\n");
+	
+	cout << finalStr;
+}
+
+void Scheduler::printRow(
+	int _currentTime, Process executingProcess, Process preemptedProcess
+)
+{
+	// Symbols
+	const char *hashtag = "## ";
+	const char *doubleDash = "-- ";
+	const char *emptySpace = "   ";
+
+	string currentTimeStr = to_string(_currentTime);
+	string nextTickStr = to_string(_currentTime + 1);
+
+	string finalStr = currentTimeStr + "- " + nextTickStr + "  ";
+
+	for (size_t i = 0; i < this->processes.size(); i++)
+	{
+		int currentProcessPid = this->processes.at(i).getPid();
+		Process currentProcess = this->processes.at(i);
+		if (currentProcessPid == executingProcess.getPid()) {
+			finalStr.append(hashtag);
+		} else if (currentProcessPid == preemptedProcess.getPid() || currentProcess.getContext().getCurrentState() == "Ready") {
+			finalStr.append(doubleDash);
+		} else {
+			finalStr.append(emptySpace);
+			// Process currentProcess = this->processes.at(i);
+			// if (currentProcess.getContext().getCurrentState() == "DONE") {
+			// 	finalStr.append(emptySpace);
+			// }
+		}
+	}
+	finalStr.append("\n");
+	
+	cout << finalStr;
+}
 
 void Scheduler::prettyPrint(
 	string _statusp1, string _statusp2,

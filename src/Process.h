@@ -37,6 +37,8 @@ public:
 	/**/
 	void setDynamicPriority(int _dynamicPriority);
 	/**/
+	void setDone();
+	/**/
 	void setCurrentState(string _currentState);
 	/**/
 	void setExecutedTimeCurrentQuantum(float _executedTimeCurrentQuantum);
