@@ -4,7 +4,6 @@
 #include <sys/types.h>
 #include "ContextProcess.h"
 #include "Process.h"
-#include "ContextCPU.h"
 #include "ProcessParams.h"
 #include <vector>
 
@@ -17,7 +16,6 @@ class INE5412
 {
 private:
 	/* data */
-	ContextCPU contextCPU;
 	__int64_t stackPointer;
 	__int64_t programCounter;
 	__int64_t status;

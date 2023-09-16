@@ -11,18 +11,14 @@ using namespace std;
 
 /*
 	Creates and manages processes and their contexts, based on a chosen algorithm.
-	The algorithm is chosen by the user through the command line.
 */
 class Scheduler
 {
 private:
 	/* data */
 	vector<Process> processes;
-	vector<Process> heap;
 	vector<ProcessParams *> rawProcesses;
 	string algorithm;
-	int heapSize;
-	int currentTime;
 
 public:
 	Scheduler();
@@ -33,19 +29,11 @@ public:
 	/**/
 	vector<Process> getProcesses();
 	/**/
-	Process getProcessByPid(pid_t _pid);
-	/**/
 	std::vector<Process*> getProcessesCreatedByTime(int _currentTime);
 	/**/
 	string getAlgorithm();
 	/**/
-	bool doesProcessExist(pid_t _pid);
-	/**/
 	vector<ProcessParams *> getRawProcesses();
-	/**/
-	int getHeapSize();
-	/**/
-	int getCurrentTime();
 	/**/
 	void setRawProcesses(vector<ProcessParams *> _rawProcesses);
 	/**/
@@ -53,55 +41,27 @@ public:
 	/**/
 	void setAlgorithm(string _algorithm);
 	/**/
-	void setHeapSize(int _heapSize);
-	/**/
-	void setCurrentTime(int _currentTime);
-	/**/
 	void insertProcess(Process _process);
-	/**/
-	void insertProcessToHeap(Process _process);
-	/**/
-	void orderHeap(int _start);
-	/**/
-	Process extractminimum();
 	/**/
 	static bool compareProcessesByStaticPriorityAsc(const Process* a, const Process* b);
 	/**/
 	static bool compareProcessesByDurationDesc(const Process* a, const Process* b);
-	/**/
-	void executeHighestPriorityFromHeap();
-	/**/
-	void manage();
 	/* Pretty prints the final result */
 	void printHeaders();
 	/* Pretty time tick execution row */
 	void printRow(int _currentTime, int _executingProcessPid, int _preemptedProcessPid);
-	/* Pretty prints the final result */
-	void prettyPrint(string _statusp1, string _statusp2, string _statusp3, string _statusp4);
 	/* Printing final stats */
 	void printFinalStats(int _numberofContextSwitches);
 	/**/
-	int FCFS(/* args */);
+	int FCFS();
 	/**/
-	int shortestJobFirst(/* args */);
+	int shortestJobFirst();
 	/**/
-	int priorityWithoutPreemption(/* args */);
+	int priorityWithoutPreemption();
 	/**/
-	int priorityWithPreemption(/* args */);
+	int priorityWithPreemption();
 	/**/
-	int roundRobin(/* args */);
-	/**/
-	void findTurnAroundTimeForEach();
-	/**/
-	void findWaitingTimeForEach();
-	/**/
-	void findTotalTimesOfContextChangeForEach();
-	/**/
-	void findAverageTurnAroundTime();
-	/**/
-	void findAverageWaitingTime();
-	/**/
-	void findAverageTimesOfContextChange();
+	int roundRobin();
 };
 
 #endif

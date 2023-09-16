@@ -32,16 +32,6 @@ Scheduler::Scheduler(string _algorithm)
 	this->setAlgorithm(_algorithm);
 	this->printHeaders();
 
-	// for (size_t i = 0; i < this->getProcesses().size(); i++)
-	// {
-	// 	Process process = this->getProcesses().at(i);
-	// 	cout << "creation time: " << process.getContext().getCreationTime() << "\n";
-	// 	cout << "duration: " << process.getContext().getDuration() << "\n";
-	// 	cout << "priority: " << process.getContext().getStaticPriority() << "\n";
-	// 	cout << "--------------------------------------------------------"
-	// 		 << "\n";
-	// }
-
 	if (_algorithm == "FCFS")
 	{
 		/* code */
@@ -69,7 +59,13 @@ Scheduler::Scheduler(string _algorithm)
 	}
 	else
 	{
-		throw "Not a valid algorithm!";
+		try {
+			throw "Not a valid algorithm!";
+		}
+		catch (const char* errorMsg) {
+			// Handle the exception here, e.g., print an error message
+			std::cerr << "Exception caught: " << errorMsg << std::endl;
+    	}
 	}
 }
 
@@ -79,9 +75,7 @@ Scheduler::~Scheduler() {}
 
 void Scheduler::createProcesses()
 {
-	// this is where we start everything. I'm aware the f.getProcesses() already gives us
-	// a list of processes, but I want to move to our own list.
-	// In here we create the processes.
+	// this is where we start everything.
 
 	for (size_t i = 0; i < this->getRawProcesses().size(); i++)
 	{
@@ -109,6 +103,7 @@ int Scheduler::FCFS()
 {
 	int contextSwitches = 1;
 	int currentTime = 0;
+
 	std::vector<Process*> queue = this->getProcessesCreatedByTime(currentTime);
 	for (size_t i = 0; i < queue.size(); i++) {
 		Process* currentProcessLoop = queue.at(i);
@@ -188,6 +183,7 @@ int Scheduler::shortestJobFirst()
 {
 	int contextSwitches = 1;
 	int currentTime = 0;
+
 	std::vector<Process*> queue = this->getProcessesCreatedByTime(currentTime);
 	for (size_t i = 0; i < queue.size(); i++) {
 		Process* currentProcessLoop = queue.at(i);
@@ -266,7 +262,7 @@ int Scheduler::shortestJobFirst()
 	return 0;
 }
 
-int Scheduler::priorityWithoutPreemption(/* args */)
+int Scheduler::priorityWithoutPreemption()
 {
 	int contextSwitches = 1;
 	int currentTime = 0;
@@ -279,6 +275,7 @@ int Scheduler::priorityWithoutPreemption(/* args */)
 	// Tracker to check if the past executing process was finalized
 	bool pastProcessFinished = false;
 
+	// Always sort by ascending priority
 	std::sort(queue.begin(), queue.end(), this->compareProcessesByStaticPriorityAsc);
 
 	// Time abstraction - every iteration here is the passage of one second
@@ -510,38 +507,11 @@ int Scheduler::roundRobin()
 	return 0;
 }
 
-void Scheduler::findTurnAroundTimeForEach() {}
-void Scheduler::findWaitingTimeForEach() {}
-void Scheduler::findTotalTimesOfContextChangeForEach() {}
-void Scheduler::findAverageTurnAroundTime() {}
-void Scheduler::findAverageWaitingTime() {}
-void Scheduler::findAverageTimesOfContextChange() {}
-
 /////////////// gets ///////////////
 
 vector<ProcessParams *> Scheduler::getRawProcesses() { return this->rawProcesses; }
 
 vector<Process> Scheduler::getProcesses() { return this->processes; }
-
-Process Scheduler::getProcessByPid(pid_t _pid)
-{
-	if (!this->doesProcessExist(_pid))
-	{
-		printf("Process does not exist");
-		throw "Process does not exist";
-	}
-
-	int size = this->getProcesses().size();
-	for (int i = 0; i < size; i++)
-	{
-		if (this->getProcesses().at(i).getPid() == _pid)
-		{
-			return this->getProcesses().at(i);
-		}
-	}
-	Process n;
-	return n; // returning an empty process may be dangerous.
-}
 
 std::vector<Process*> Scheduler::getProcessesCreatedByTime(int _currentTime)
 {
@@ -557,22 +527,6 @@ std::vector<Process*> Scheduler::getProcessesCreatedByTime(int _currentTime)
 
 string Scheduler::getAlgorithm() { return this->algorithm; }
 
-bool Scheduler::doesProcessExist(pid_t _pid)
-{
-	int size = this->getProcesses().size();
-	for (int i = 0; i < size; i++)
-	{
-		if (this->getProcesses().at(i).getPid() == _pid)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-int Scheduler::getHeapSize() { return this->heapSize; }
-int Scheduler::getCurrentTime() { return this->currentTime; }
-
 /////////////// sets ///////////////
 
 void Scheduler::setRawProcesses(vector<ProcessParams *> _rawProcesses)
@@ -583,84 +537,13 @@ void Scheduler::setRawProcesses(vector<ProcessParams *> _rawProcesses)
 void Scheduler::setProcesses(vector<Process> _processes)
 {
 	this->processes = _processes;
-	// for (size_t i = 0; i < _processes.size(); i++)
-	// {
-	// 	this->processes.push_back(_processes[i]);
-	// }
 }
 
 void Scheduler::setAlgorithm(string _algorithm) { this->algorithm = _algorithm; }
-void Scheduler::setHeapSize(int _heapSize) { this->heapSize = _heapSize; }
-void Scheduler::setCurrentTime(int _currentTime) { this->currentTime = _currentTime; }
 
 void Scheduler::insertProcess(Process _process)
 {
 	this->processes.push_back(_process);
-}
-
-void Scheduler::insertProcessToHeap(Process _process)
-{
-	int start = this->getHeapSize(), i;
-	this->heap.at(this->getHeapSize()) = _process;
-
-	if (this->heap.at(this->getHeapSize()).getContext().getInTime() == -1)
-	{
-		this->heap.at(this->getHeapSize()).setInTime(this->getCurrentTime());
-	}
-	this->setHeapSize(this->getHeapSize() + 1);
-
-	// Ordering the Heap
-	while (start != 0 &&
-		   this->heap.at((start - 1) / 2).getContext().getStaticPriority() > this->heap.at(start).getContext().getStaticPriority())
-	{
-		Process temp = this->heap.at((start - 1) / 2);
-		this->heap.at((start - 1) / 2) = this->heap.at(start);
-		this->heap.at(start) = temp;
-		start = (start - 1) / 2;
-	}
-}
-
-void Scheduler::orderHeap(int _start)
-{
-
-	int smallest = _start;
-	int left = 2 * _start + 1;
-	int right = 2 * _start + 2;
-	if (left < this->getHeapSize() &&
-		this->heap.at(left).getContext().getStaticPriority() < this->heap.at(smallest).getContext().getStaticPriority())
-	{
-		smallest = left;
-	}
-	if (right < this->getHeapSize() &&
-		this->heap.at(left).getContext().getStaticPriority() < this->heap.at(smallest).getContext().getStaticPriority())
-	{
-		smallest = right;
-	}
-
-	// Ordering the Heap
-	if (smallest != _start)
-	{
-		Process temp = this->heap.at(smallest);
-		this->heap.at(smallest) = this->heap.at(smallest);
-		this->heap.at(_start) = temp;
-		this->orderHeap(smallest);
-	}
-}
-Process Scheduler::extractminimum()
-{
-	// Process min = Heap[0];
-	Process min = this->heap.at(0);
-	if (min.getContext().getResponseTime() == -1)
-	{
-		min.setResponseTime(this->getCurrentTime() - min.getContext().getArrivalTime());
-	}
-	this->setHeapSize(this->getHeapSize() - 1);
-	if (this->getHeapSize() >= 1)
-	{
-		this->heap.at(0) = this->heap.at(this->getHeapSize());
-		this->orderHeap(0);
-	}
-	return min;
 }
 
 /////////////// beautifiers ///////////////
@@ -677,15 +560,22 @@ void Scheduler::printFinalStats(int _numberofContextSwitches)
 
 	int totalTurnAroundTime = 0;
 	int totalWaitingTime = 0;
+	int previousTurnAroundtime = 0;
 
 	// Find average times
 	for (size_t i = 0; i < this->getProcesses().size(); i++)
 	{
-		totalTurnAroundTime = totalTurnAroundTime + this->getProcesses().at(i).getContext().getTurnAroundTime();
-		totalWaitingTime = totalWaitingTime + this->getProcesses().at(i).getContext().getWaitingTime();
+		if (i == 0) {
+			totalTurnAroundTime = this->getProcesses().at(i).getContext().getTurnAroundTime();
+		} else {
+			totalTurnAroundTime +=  previousTurnAroundtime + this->getProcesses().at(i).getContext().getTurnAroundTime();
+		}
+		previousTurnAroundtime = previousTurnAroundtime + this->getProcesses().at(i).getContext().getTurnAroundTime();
+
+		totalWaitingTime += this->getProcesses().at(i).getContext().getWaitingTime();
 	}
-	float averageTurnAroundTime = round(totalTurnAroundTime / this->getProcesses().size());
-	float averageWaitingTime = round(totalWaitingTime / this->getProcesses().size());
+	float averageTurnAroundTime = (totalTurnAroundTime / (float)this->getProcesses().size());
+	float averageWaitingTime = (totalWaitingTime / (float)this->getProcesses().size());
 
 	finalStr.append("Turn around médio: " + to_string(averageTurnAroundTime) + "\n");
 	finalStr.append("Tempo de espera médio: " + to_string(averageWaitingTime) + "\n");
@@ -746,74 +636,4 @@ void Scheduler::printRow(
 	finalStr.append("\n");
 	
 	cout << finalStr;
-}
-
-void Scheduler::prettyPrint(
-	string _statusp1, string _statusp2,
-	string _statusp3, string _statusp4)
-{
-	cout << "tempo"
-		 << "   "
-		 << "P1"
-		 << "   "
-		 << "P2"
-		 << "   "
-		 << "P3"
-		 << "   "
-		 << "P4\n";
-
-	// relate status and symbol
-	std::map<string, string> mapStatusAndSymbol;
-	const char *ready = "ready";		 // process has been created and it's waiting.
-	const char *executing = "executing"; // process is executing
-	const char *notReady = "done";		 // process hasn't started or it's done.
-	const char *hashtag = "##";
-	const char *douleDash = "--";
-	const char *emptySpace = " ";
-	mapStatusAndSymbol.insert(std::make_pair(ready, douleDash));
-	mapStatusAndSymbol.insert(std::make_pair(executing, hashtag));
-	mapStatusAndSymbol.insert(std::make_pair(notReady, emptySpace));
-
-	int sumOfProcessDuration = 14; // in the future, make it dynamic
-	for (int i = 0; i < sumOfProcessDuration; i++)
-	{
-		int left = i;
-		int right = left + 1;
-		if (i < 9)
-		{
-			cout << left << " " << right << "     "
-				 << mapStatusAndSymbol[_statusp1]
-				 << "   "
-				 << mapStatusAndSymbol[_statusp2]
-				 << "   "
-				 << mapStatusAndSymbol[_statusp3]
-				 << "   "
-				 << mapStatusAndSymbol[_statusp4]
-				 << "\n";
-		}
-		else if (i == 9)
-		{
-			cout << left << " " << right << "    "
-				 << mapStatusAndSymbol[_statusp1]
-				 << "   "
-				 << mapStatusAndSymbol[_statusp2]
-				 << "   "
-				 << mapStatusAndSymbol[_statusp3]
-				 << "   "
-				 << mapStatusAndSymbol[_statusp4]
-				 << "\n";
-		}
-		else
-		{
-			cout << left << " " << right << "   "
-				 << mapStatusAndSymbol[_statusp1]
-				 << "   "
-				 << mapStatusAndSymbol[_statusp2]
-				 << "   "
-				 << mapStatusAndSymbol[_statusp3]
-				 << "   "
-				 << mapStatusAndSymbol[_statusp4]
-				 << "\n";
-		}
-	}
 }
