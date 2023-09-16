@@ -118,7 +118,7 @@ int Scheduler::FCFS()
 int Scheduler::shortestJobFirst()
 {
 	// Sorting processes according to their Burst Time (duration).
-	// sort(this->processes.begin(), this->processes.end(), Scheduler::compareDurations);
+	sort(this->processes.begin(), this->processes.end(), Scheduler::compareDurations);
 
 	this->processes.at(0).setWaitingTime(0);
 	this->processes.at(0).setTurnAroundTime(
@@ -180,7 +180,7 @@ int Scheduler::priorityWithoutPreemption()
 
 int Scheduler::priorityWithPreemption()
 {
-	// sort(this->processes.begin(), this->processes.end(), Scheduler::compareCreationTimes);
+	sort(this->processes.begin(), this->processes.end(), Scheduler::compareCreationTimes);
 
 	int totalWaitingTime = 0, totalDurationTime = 0,
 		insertedprocess = 0,
@@ -377,15 +377,15 @@ Process Scheduler::extractminimum()
 	return min;
 }
 
-// bool Scheduler::compareDurations(const Process &a, const Process &b)
-// {
-// 	return a.getContext().getDuration() < b.getContext().getDuration();
-// }
+bool Scheduler::compareDurations(const Process &a, const Process &b)
+{
+	return a.getContextConst().getDuration() < b.getContextConst().getDuration();
+}
 
-// bool Scheduler::compareCreationTimes(const Process &a, const Process &b)
-// {
-// 	return a.getContext().getCreationTime() < b.getContext().getCreationTime();
-// }
+bool Scheduler::compareCreationTimes(const Process &a, const Process &b)
+{
+	return a.getContextConst().getCreationTime() < b.getContextConst().getCreationTime();
+}
 
 void Scheduler::executeHighestPriorityFromHeap()
 {

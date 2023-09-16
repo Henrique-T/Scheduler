@@ -20,6 +20,7 @@ Process::~Process() {}
 
 pid_t Process::getPid() { return this->pid; }
 ContextProcess Process::getContext() { return this->context; }
+ContextProcess Process::getContextConst() const { return this->context; }
 
 /////////////// sets  ///////////////
 
