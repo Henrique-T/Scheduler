@@ -29,7 +29,7 @@ void Process::setEndDate(int _endDate) { this->context.setEndDate(_endDate); }
 void Process::setDuration(int _duration) { this->context.setDuration(_duration); }
 void Process::setStaticPriority(int _staticPriority) { this->context.setStaticPriority(_staticPriority); }
 void Process::setDynamicPriority(int _dynamicPriority) { this->context.setDynamicPriority(_dynamicPriority); }
-void Process::setDone() {this->setCurrentState("DONE"); }
+void Process::setDone() {this->setCurrentState("Done"); }
 void Process::setCurrentState(string _currentState) { this->context.setCurrentState(_currentState); }
 void Process::setExecutedTimeCurrentQuantum(int _executedTimeCurrentQuantum) { this->context.setExecutedTimeCurrentQuantum(_executedTimeCurrentQuantum); }
 void Process::setExecutedTimeTotal(int _executedTimeTotal) { this->context.setExecutedTimeTotal(_executedTimeTotal); }

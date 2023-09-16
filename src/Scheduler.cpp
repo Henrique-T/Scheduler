@@ -306,51 +306,59 @@ int Scheduler::roundRobin()
 {
 	//int contextSwitches = 0;
 	int currentTime = 0;
-	vector<Process> queue = this->getProcessesCreatedByTime(currentTime);
+	std::vector<Process*> queue = this->getProcessesCreatedByTime(currentTime);
+
+	//Populate queue with pointers to the original Process objects
+	// for (size_t i = 0; i < queue.size(); i++) {
+	// 	//Process* currentProcessLoop = &processes[i];
+	// 	cout << "Pilha tem: " << queue.at(1)->getPid() << "\n";
+	// }
 
 	// Time abstraction - every iteration here is the passage of one second
-	Process currentProcess = queue.at(0);
-	Process actualProcess = this->getProcessByPid(currentProcess.getPid());
+	Process* currentProcess = queue.at(0);
+	//Process actualProcess = this->getProcessByPid(currentProcess.getPid());
 	
 	while (queue.size() > 0 && currentTime < 30)
 	{
 		bool isFinalPartOfQuantum = currentTime % 2 != 0;
 
 		if (currentTime > 0) {
-			vector<Process> createdProcesses = this->getProcessesCreatedByTime(currentTime);
+			vector<Process *> createdProcesses = this->getProcessesCreatedByTime(currentTime);
 			if (createdProcesses.size() > 0) {
 				for (size_t i = 0; i < createdProcesses.size(); i++) {
+					Process* currentProcessLoop = createdProcesses.at(i);
+					currentProcess->setCurrentState("Ready");
 					queue.push_back(createdProcesses.at(i));
 				}
 			}
 		}
 		
 		// Getting first element only at beginning of quantums
-		Process currentProcess = queue.at(0);
-		Process actualProcess = this->getProcessByPid(currentProcess.getPid());
+		Process* currentProcess = queue.at(0);
 		
-		cout << "Current pid: " << actualProcess.getPid() << endl;
-		cout << "Executed time: " << actualProcess.context.executedTimeTotal << endl;
+		// cout << "Current pid: " << currentProcess->getPid() << endl;
+		// cout << "Executed time: " << currentProcess->context.executedTimeTotal << endl;
 
-		actualProcess.context.executedTimeTotal++;
+		int timeLeftToExecute = (currentProcess->getContext().getDuration()) - (currentProcess->getContext().getExecutedTimeTotal());
 
-		int timeLeftToExecute = (actualProcess.getContext().getDuration()) - (actualProcess.getContext().getExecutedTimeTotal());
-		cout << "  Time left: " << timeLeftToExecute << endl;
-		printf("\n");
-
+		
 		if (timeLeftToExecute == 1) {
-			printf("Vai acabar");
 			// Means that process only has one second left to be done, and it won't be added at the end of the queue
-			
-			actualProcess.setDone();
-			this->printRow(currentTime, actualProcess.getPid(), -1);
+			//printf("Vai terminar");
+			int value = 1;
+			currentProcess->addExecutedTime(value);
+			currentProcess->setDone();
+			this->printRow(currentTime, currentProcess->getPid(), -1);
+
 			// Only actually 'pop' if the process is done
 			queue.erase(queue.begin());
 		} else {
+			int value = 1;
+			currentProcess->addExecutedTime(value);
 			// Means will need more than this second to be finished
-			this->printRow(currentTime, actualProcess.getPid(), -1);
-			//actualProcess.addExecutedTime(1);
-			cout << "Executed time: " << actualProcess.context.executedTimeTotal << endl;
+			this->printRow(currentTime, currentProcess->getPid(), -1);
+			//currentProcess->addExecutedTime(1);
+			//cout << "Executed time: " << currentProcess->context.executedTimeTotal << endl;
 			
 			if (isFinalPartOfQuantum) {
 				// If this is the end of a quantum, this process will be sent back to the list
@@ -397,19 +405,21 @@ Process Scheduler::getProcessByPid(pid_t _pid)
 	return n; // returning an empty process may be dangerous.
 }
 
-vector<Process> Scheduler::getProcessesCreatedByTime(int _currentTime)
+std::vector<Process*> Scheduler::getProcessesCreatedByTime(int _currentTime)
 {
-	vector<Process> createdProcesses;
-	int size = this->getProcesses().size();
-	for (int i = 0; i < size; i++)
-	{
-		Process currentProcess = this->processes.at(i);
-		if (currentProcess.getContext().getCreationTime() == _currentTime) 
-		{
-			createdProcesses.push_back(currentProcess);
-		}
-	}
-	return createdProcesses; 
+	std::vector<Process*> createdProcesses;
+    for (int i = 0; i < this->processes.size(); i++) {
+        Process* currentProcess = &this->processes.at(i);
+        if (currentProcess->getContext().getCreationTime() == _currentTime) {
+            createdProcesses.push_back(currentProcess);
+        }
+    }
+	for (int i = 0; i < createdProcesses.size(); i++) {
+        Process* currentProcess = createdProcesses.at(i);
+        //cout << currentProcess->getPid();
+    }
+
+    return createdProcesses;
 }
 
 string Scheduler::getAlgorithm() { return this->algorithm; }
@@ -547,7 +557,16 @@ void Scheduler::printRow(
 	string currentTimeStr = to_string(_currentTime);
 	string nextTickStr = to_string(_currentTime + 1);
 
+	
 	string finalStr = currentTimeStr + "- " + nextTickStr + "  ";
+	// Adjusting print
+	if (currentTimeStr.size() > 1 && nextTickStr.size() > 1) {
+		finalStr = currentTimeStr + "-" + nextTickStr + " ";
+	}
+
+	if (currentTimeStr.size() <= 1 && nextTickStr.size() > 1) {
+		finalStr = currentTimeStr + "- " + nextTickStr + " ";
+	}
 
 	for (size_t i = 0; i < this->processes.size(); i++)
 	{

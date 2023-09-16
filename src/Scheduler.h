@@ -35,7 +35,7 @@ public:
 	/**/
 	Process getProcessByPid(pid_t _pid);
 	/**/
-	vector<Process> getProcessesCreatedByTime(int _currentTime);
+	std::vector<Process*> getProcessesCreatedByTime(int _currentTime);
 	/**/
 	string getAlgorithm();
 	/**/
