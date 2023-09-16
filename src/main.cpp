@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#include "helloWorld.h"
+#include "INE5412.h"
 
 int main()
 {
 	printf("TEST\n");
-	helloWorld();
+	// Create an instance of INE5412 or any other cpu.
+	INE5412 cpu("roundRobin");
 	return 1;
 }

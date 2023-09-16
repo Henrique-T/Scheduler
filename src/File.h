@@ -5,26 +5,28 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "processParams.h"
+#include "ProcessParams.h"
 
 using namespace std;
 
 /*
 	Represents the input .txt file.
 */
-class file
+class File
 {
+private:
+	ifstream myfile;
+	vector<ProcessParams *> processes;
+
 public:
-	file();
-	~file();
+	File();
+	~File();
 	/**/
 	void read_file();
 	/**/
 	void print_processes_params();
-
-private:
-	ifstream myfile;
-	vector<processParams *> processes;
+	/**/
+	vector<ProcessParams *> getProcesses();
 };
 
 #endif

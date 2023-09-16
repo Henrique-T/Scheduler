@@ -2,12 +2,12 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "processParams.h"
-#include "file.h"
+#include "ProcessParams.h"
+#include "File.h"
 
 using namespace std;
 
-file::file()
+File::File()
 {
 	myfile.open("entrada.txt");
 	if (!myfile.is_open())
@@ -16,16 +16,16 @@ file::file()
 	}
 }
 
-file::~file()
+File::~File()
 {
 	for (int i = 0; i < processes.size(); i++)
 	{
-		processParams *p = processes[i];
+		ProcessParams *p = processes[i];
 		delete p;
 	}
 }
 
-void file::read_file()
+void File::read_file()
 {
 
 	int a, b, c;
@@ -37,20 +37,25 @@ void file::read_file()
 
 	while (myfile >> a >> b >> c)
 	{
-		processParams *p = new processParams(a, b, c);
+		ProcessParams *p = new ProcessParams(a, b, c);
 		processes.push_back(p);
 	}
 
 	cout << "Quantidade de processos lidos do arquivo: " << processes.size() << endl;
 }
 
-void file::print_processes_params()
+void File::print_processes_params()
 {
-	vector<processParams *>::iterator iter = processes.begin();
+	vector<ProcessParams *>::iterator iter = processes.begin();
 
 	for (iter; iter < processes.end(); iter++)
 	{
-		processParams *p = *iter;
+		ProcessParams *p = *iter;
 		cout << *p;
 	}
+}
+
+vector<ProcessParams *> File::getProcesses()
+{
+	return this->processes;
 }
