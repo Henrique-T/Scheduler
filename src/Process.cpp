@@ -18,7 +18,7 @@ Process::~Process() {}
 /////////////// gets ///////////////
 
 pid_t Process::getPid() { return this->pid; }
-ContextProcess Process::getContext() { return this->context; }
+ContextProcess Process::getContext() const { return this->context; }
 
 /////////////// sets  ///////////////
 

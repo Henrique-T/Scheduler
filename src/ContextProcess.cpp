@@ -9,6 +9,7 @@ ContextProcess::ContextProcess(int _pid, int _creationTime, int _duration, int _
 	this->setCreationTime(_creationTime);
 	this->setDuration(_duration);
 	this->setStaticPriority(_priority);
+	this->setDynamicPriority(0);
 	this->setExecutedTimeTotal(0);
 	this->setCurrentState("novo");
 	// this->setTurnAroundTime(0);
@@ -25,7 +26,7 @@ pid_t ContextProcess::getPid() { return this->pid; }
 int ContextProcess::getStartDate() { return this->startDate; }
 int ContextProcess::getEndDate() { return this->endDate; }
 int ContextProcess::getDuration() const { return this->duration; }
-int ContextProcess::getStaticPriority() { return this->staticPriority; }
+int ContextProcess::getStaticPriority() const { return this->staticPriority; }
 int ContextProcess::getDynamicPriority() { return this->dynamicPriority; }
 string ContextProcess::getCurrentState() { return this->currentState; }
 int ContextProcess::getExecutedTimeCurrentQuantum() { return this->executedTimeCurrentQuantum; }

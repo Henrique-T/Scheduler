@@ -21,7 +21,7 @@ public:
 	/**/
 	pid_t getPid();
 	/**/
-	ContextProcess getContext();
+	ContextProcess getContext() const;
 	/**/
 	void setPid(pid_t _pid);
 	/**/

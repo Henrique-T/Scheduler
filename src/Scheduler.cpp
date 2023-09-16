@@ -7,6 +7,8 @@
 
 using namespace std;
 
+/* HELPER FUNCTIONS AREA */
+
 // Used to convert any value to strings
 template <typename T>
     std::string to_string(T value)
@@ -15,6 +17,12 @@ template <typename T>
       os << value;
       return os.str();
     }
+
+bool compareProcessesByStaticPriority(const Process* a, const Process* b) {
+    return a->getContext().getStaticPriority() > b->getContext().getStaticPriority();
+}
+
+/* END OF HELPER FUNCTIONS AREA */
 
 Scheduler::Scheduler() {}
 
@@ -294,11 +302,123 @@ int Scheduler::shortestJobFirst()
 
 int Scheduler::priorityWithoutPreemption(/* args */)
 {
+	int currentTime = 0;
+	std::vector<Process*> queue = this->getProcessesCreatedByTime(currentTime);
+	for (size_t i = 0; i < queue.size(); i++) {
+		Process* currentProcessLoop = queue.at(i);
+		currentProcessLoop->setCurrentState("Ready"); // Setting scheduled process to ready
+	}
+
+	// Tracker to check if the past executing process was finalized
+	bool pastProcessFinished = false;
+
+	std::sort(queue.begin(), queue.end(), compareProcessesByStaticPriority);
+
+	// Getting the first element of queue after sorting
+	Process* currentProcess = queue.at(0);
+
+	// Time abstraction - every iteration here is the passage of one second
+	while (queue.size() > 0)
+	{
+		if (currentTime > 0) {
+			// If time is past 0, it means we always have to check if there are any new processes being created at this instant
+			vector<Process *> createdProcesses = this->getProcessesCreatedByTime(currentTime);
+			if (createdProcesses.size() > 0) {
+				for (size_t i = 0; i < createdProcesses.size(); i++) {
+					Process* currentProcessLoop = createdProcesses.at(i);
+					currentProcessLoop->setCurrentState("Ready"); // Setting scheduled process to ready
+					queue.push_back(createdProcesses.at(i));
+				}
+			}
+		}
+		
+		// We only 're-sort' queue after a process is done
+		if (pastProcessFinished) {
+			/* CONTEXT SWITCH !!! */
+			pastProcessFinished = false;	
+			std::sort(queue.begin(), queue.end(), compareProcessesByStaticPriority);
+		}
+
+		Process* currentProcess = queue.at(0);
+		if (pastProcessFinished) {
+			currentProcess->setCurrentState("Executing"); // Setting current process to executing
+		}
+
+		int timeLeftToExecute = (currentProcess->getContext().getDuration()) - (currentProcess->getContext().getExecutedTimeTotal());
+		
+		if (timeLeftToExecute == 1) {
+			// Means that process only has one second left to be done, and it won't be added at the end of the queue
+			int value = 1;
+			currentProcess->addExecutedTime(value);
+			currentProcess->setDone();
+			pastProcessFinished = true;
+			this->printRow(currentTime, currentProcess->getPid(), -1);
+			// Only actually 'pop' if the process is done
+			queue.erase(queue.begin());
+			
+		} else {
+			// Means will need more than this second to be finished
+			int value = 1;
+			currentProcess->addExecutedTime(value);
+			this->printRow(currentTime, currentProcess->getPid(), -1);
+		}
+		currentTime++;
+	}
+
 	return 0;
 }
 
 int Scheduler::priorityWithPreemption(/* args */)
 {
+	int currentTime = 0;
+	std::vector<Process*> queue = this->getProcessesCreatedByTime(currentTime);
+	for (size_t i = 0; i < queue.size(); i++) {
+		Process* currentProcessLoop = queue.at(i);
+		currentProcessLoop->setCurrentState("Ready"); // Setting scheduled process to ready
+	}
+
+	// Time abstraction - every iteration here is the passage of one second
+	while (queue.size() > 0)
+	{
+		if (currentTime > 0) {
+			// If time is past 0, it means we always have to check if there are any new processes being created at this instant
+			vector<Process *> createdProcesses = this->getProcessesCreatedByTime(currentTime);
+			if (createdProcesses.size() > 0) {
+				for (size_t i = 0; i < createdProcesses.size(); i++) {
+					Process* currentProcessLoop = createdProcesses.at(i);
+					currentProcessLoop->setCurrentState("Ready"); // Setting scheduled process to ready
+					queue.push_back(createdProcesses.at(i));
+				}
+			}
+		}
+
+		std::sort(queue.begin(), queue.end(), compareProcessesByStaticPriority);
+		
+		// We always get the first element of the queue
+		Process* currentProcess = queue.at(0);
+		currentProcess->setCurrentState("Executing"); // Setting current process to executing
+
+		int timeLeftToExecute = (currentProcess->getContext().getDuration()) - (currentProcess->getContext().getExecutedTimeTotal());
+		
+		if (timeLeftToExecute == 1) {
+			// Means that process only has one second left to be done, and it won't be added at the end of the queue
+			int value = 1;
+			currentProcess->addExecutedTime(value);
+			currentProcess->setDone();
+			this->printRow(currentTime, currentProcess->getPid(), -1);
+			// Only actually 'pop' if the process is done
+			queue.erase(queue.begin());
+			
+		} else {
+			// Means will need more than this second to be finished
+			int value = 1;
+			currentProcess->addExecutedTime(value);
+			this->printRow(currentTime, currentProcess->getPid(), -1);
+			currentProcess->setCurrentState("Ready");
+		}
+		currentTime++;
+	}
+
 	return 0;
 }
 
@@ -312,7 +432,7 @@ int Scheduler::roundRobin()
 	}
 
 	// Time abstraction - every iteration here is the passage of one second
-	while (queue.size() > 0 && currentTime < 30)
+	while (queue.size() > 0)
 	{
 		bool isFinalPartOfQuantum = currentTime % 2 != 0;
 
@@ -521,6 +641,23 @@ Process Scheduler::extractminimum()
 }
 
 /////////////// beautifiers ///////////////
+
+void Scheduler::printFinalStats(float _averageTurnAroundTime, float _averageWaitingTime, float _numberofContextSwitches)
+{
+	string finalStr = "### ESTATÍSTICAS FINAIS ###\n";
+	for (size_t i = 0; i < this->processes.size(); i++)
+	{
+		Process currentProcess = this->processes.at(i);
+		finalStr.append("Process " + to_string(currentProcess.getPid()) + " turn around time: " + to_string(currentProcess.getContext().getTurnAroundTime()));
+		finalStr.append("\n");
+	}
+	finalStr.append("\n");
+	finalStr.append("Turn around médio: " + to_string(_averageTurnAroundTime));
+	finalStr.append("Tempo de espera médio: " + to_string(_averageWaitingTime));
+	finalStr.append("Número de trocas de contexto: " + to_string(_numberofContextSwitches));
+	
+	cout << finalStr;
+}
 
 void Scheduler::printHeaders()
 {

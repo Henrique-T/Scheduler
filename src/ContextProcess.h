@@ -42,7 +42,7 @@ public:
 	/**/
 	int getDuration() const;
 	/**/
-	int getStaticPriority();
+	int getStaticPriority() const;
 	/**/
 	int getDynamicPriority();
 	/**/
