@@ -304,47 +304,38 @@ int Scheduler::priorityWithPreemption(/* args */)
 
 int Scheduler::roundRobin()
 {
-	//int contextSwitches = 0;
 	int currentTime = 0;
 	std::vector<Process*> queue = this->getProcessesCreatedByTime(currentTime);
-
-	//Populate queue with pointers to the original Process objects
-	// for (size_t i = 0; i < queue.size(); i++) {
-	// 	//Process* currentProcessLoop = &processes[i];
-	// 	cout << "Pilha tem: " << queue.at(1)->getPid() << "\n";
-	// }
+	for (size_t i = 0; i < queue.size(); i++) {
+		Process* currentProcessLoop = queue.at(i);
+		currentProcessLoop->setCurrentState("Ready"); // Setting scheduled process to ready
+	}
 
 	// Time abstraction - every iteration here is the passage of one second
-	Process* currentProcess = queue.at(0);
-	//Process actualProcess = this->getProcessByPid(currentProcess.getPid());
-	
 	while (queue.size() > 0 && currentTime < 30)
 	{
 		bool isFinalPartOfQuantum = currentTime % 2 != 0;
 
 		if (currentTime > 0) {
+			// If time is past 0, it means we have to check if there are any new processes being created at this instant
 			vector<Process *> createdProcesses = this->getProcessesCreatedByTime(currentTime);
 			if (createdProcesses.size() > 0) {
 				for (size_t i = 0; i < createdProcesses.size(); i++) {
 					Process* currentProcessLoop = createdProcesses.at(i);
-					currentProcess->setCurrentState("Ready");
+					currentProcessLoop->setCurrentState("Ready"); // Setting scheduled process to ready
 					queue.push_back(createdProcesses.at(i));
 				}
 			}
 		}
 		
-		// Getting first element only at beginning of quantums
+		// We always get the first element of the queue
 		Process* currentProcess = queue.at(0);
-		
-		// cout << "Current pid: " << currentProcess->getPid() << endl;
-		// cout << "Executed time: " << currentProcess->context.executedTimeTotal << endl;
+		currentProcess->setCurrentState("Executing"); // Setting current process to executing
 
 		int timeLeftToExecute = (currentProcess->getContext().getDuration()) - (currentProcess->getContext().getExecutedTimeTotal());
-
 		
 		if (timeLeftToExecute == 1) {
 			// Means that process only has one second left to be done, and it won't be added at the end of the queue
-			//printf("Vai terminar");
 			int value = 1;
 			currentProcess->addExecutedTime(value);
 			currentProcess->setDone();
@@ -353,15 +344,14 @@ int Scheduler::roundRobin()
 			// Only actually 'pop' if the process is done
 			queue.erase(queue.begin());
 		} else {
+			// Means will need more than this second to be finished
 			int value = 1;
 			currentProcess->addExecutedTime(value);
-			// Means will need more than this second to be finished
 			this->printRow(currentTime, currentProcess->getPid(), -1);
-			//currentProcess->addExecutedTime(1);
-			//cout << "Executed time: " << currentProcess->context.executedTimeTotal << endl;
 			
 			if (isFinalPartOfQuantum) {
 				// If this is the end of a quantum, this process will be sent back to the list
+				currentProcess->setCurrentState("Ready");
 				queue.erase(queue.begin());
 				queue.push_back(currentProcess);
 			}
@@ -557,17 +547,18 @@ void Scheduler::printRow(
 	string currentTimeStr = to_string(_currentTime);
 	string nextTickStr = to_string(_currentTime + 1);
 
-	
 	string finalStr = currentTimeStr + "- " + nextTickStr + "  ";
-	// Adjusting print
+
+	// Adjusting print for bigger time stamps
 	if (currentTimeStr.size() > 1 && nextTickStr.size() > 1) {
 		finalStr = currentTimeStr + "-" + nextTickStr + " ";
 	}
 
-	if (currentTimeStr.size() <= 1 && nextTickStr.size() > 1) {
+	else if (currentTimeStr.size() <= 1 && nextTickStr.size() > 1) {
 		finalStr = currentTimeStr + "- " + nextTickStr + " ";
 	}
 
+	// Looping through all processes and checking their states
 	for (size_t i = 0; i < this->processes.size(); i++)
 	{
 		int currentProcessPid = this->processes.at(i).getPid();
