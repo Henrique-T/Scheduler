@@ -78,18 +78,24 @@ int Scheduler::FCFS()
 		this->processes.at(0).getContext().getDuration() +
 		this->processes.at(0).getContext().getWaitingTime());
 
+	// Calculates waiting time
 	for (size_t i = 1; i < this->getProcesses().size(); i++)
 	{
 		int previousDurationTime = this->getProcesses().at(i - 1).getContext().getDuration();
 		int previousWaitingTime = this->getProcesses().at(i - 1).getContext().getWaitingTime();
 		this->processes.at(i).setWaitingTime(
 			previousDurationTime + previousWaitingTime);
+	}
+
+	// Calculates turnaround time
+	for (size_t i = 0; i < this->getProcesses().size(); i++)
+	{
 		int duration = this->getProcesses().at(i).getContext().getDuration();
 		int waitingTime = this->getProcesses().at(i).getContext().getWaitingTime();
 		this->processes.at(i).setTurnAroundTime(duration + waitingTime);
 	}
 
-	// Find average time
+	// Calculates average time
 	int totalWaitingTime = 0, totalTurnAroundTime = 0;
 	for (size_t i = 0; i < this->getProcesses().size(); i++)
 	{
