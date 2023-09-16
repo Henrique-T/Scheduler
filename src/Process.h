@@ -40,9 +40,9 @@ public:
 	/**/
 	void setCurrentState(string _currentState);
 	/**/
-	void setExecutedTimeCurrentQuantum(float _executedTimeCurrentQuantum);
+	void setExecutedTimeCurrentQuantum(int _executedTimeCurrentQuantum);
 	/**/
-	void setExecutedTimeTotal(float _executedTimeTotal);
+	void setExecutedTimeTotal(int _executedTimeTotal);
 	/**/
 	void addExecutedTime(int &_executedTime);
 	/**/

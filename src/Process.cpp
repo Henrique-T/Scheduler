@@ -32,8 +32,8 @@ void Process::setStaticPriority(int _staticPriority) { this->context.setStaticPr
 void Process::setDynamicPriority(int _dynamicPriority) { this->context.setDynamicPriority(_dynamicPriority); }
 void Process::setDone() { this->setCurrentState("DONE"); }
 void Process::setCurrentState(string _currentState) { this->context.setCurrentState(_currentState); }
-void Process::setExecutedTimeCurrentQuantum(float _executedTimeCurrentQuantum) { this->context.setExecutedTimeCurrentQuantum(_executedTimeCurrentQuantum); }
-void Process::setExecutedTimeTotal(float _executedTimeTotal) { this->context.setExecutedTimeTotal(_executedTimeTotal); }
+void Process::setExecutedTimeCurrentQuantum(int _executedTimeCurrentQuantum) { this->context.setExecutedTimeCurrentQuantum(_executedTimeCurrentQuantum); }
+void Process::setExecutedTimeTotal(int _executedTimeTotal) { this->context.setExecutedTimeTotal(_executedTimeTotal); }
 void Process::addExecutedTime(int &_executedTime) { this->context.addExecutedTime(_executedTime); }
 void Process::setCreationTime(int _creationTime) { this->context.setCreationTime(_creationTime); }
 void Process::setWaitingTime(int _waitingTime) { this->context.setWaitingTime(_waitingTime); }
