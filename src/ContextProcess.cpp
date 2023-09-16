@@ -1,5 +1,6 @@
 #include "ContextProcess.h"
 #include <cstdlib>
+#include <cstdio>
 
 ContextProcess::ContextProcess() {}
 
@@ -9,6 +10,7 @@ ContextProcess::ContextProcess(int _pid, int _creationTime, int _duration, int _
 	this->setCreationTime(_creationTime);
 	this->setDuration(_duration);
 	this->setStaticPriority(_priority);
+	this->setExecutedTimeTotal(0);
 	this->setCurrentState("novo");
 }
 
@@ -42,6 +44,7 @@ void ContextProcess::setDynamicPriority(int _dynamicPriority) { this->dynamicPri
 void ContextProcess::setCurrentState(string _currentState) { this->currentState = _currentState; }
 void ContextProcess::setExecutedTimeCurrentQuantum(int _executedTimeCurrentQuantum) { this->executedTimeCurrentQuantum = _executedTimeCurrentQuantum; }
 void ContextProcess::setExecutedTimeTotal(int _executedTimeTotal) { this->executedTimeTotal = _executedTimeTotal; }
+void ContextProcess::addExecutedTime(int &_executedTime) { this->executedTimeTotal += _executedTime; }
 void ContextProcess::setCreationTime(int _creationTime) { this->creationTime = _creationTime; }
 void ContextProcess::setWaitingTime(int _waitingTime) { this->waitingTime = _waitingTime; }
 void ContextProcess::setTurnAroundTime(int _turnAroundTime) { this->turnAroundTime = _turnAroundTime; }

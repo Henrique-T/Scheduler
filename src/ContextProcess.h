@@ -19,7 +19,6 @@ private:
 	int dynamicPriority;
 	string currentState; // new, ready, executing, done
 	int executedTimeCurrentQuantum;
-	int executedTimeTotal;
 	int creationTime;
 	int waitingTime;
 	int turnAroundTime;
@@ -31,7 +30,7 @@ public:
 	ContextProcess();
 	ContextProcess(int _pid, int _creationTime, int _duration, int _priority);
 	~ContextProcess();
-
+	int executedTimeTotal;
 	pid_t getPid();
 	/**/
 	int getStartDate();
@@ -79,6 +78,8 @@ public:
 	void setExecutedTimeCurrentQuantum(int _executedTimeCurrentQuantum);
 	/**/
 	void setExecutedTimeTotal(int _executedTimeTotal);
+	/**/
+	void addExecutedTime(int &_executedTime);
 	/**/
 	void setCreationTime(int _creationTime);
 	/**/

@@ -2,6 +2,7 @@
 #include "File.h"
 #include <map>
 #include <string>
+#include <sstream>
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -16,6 +17,7 @@ Scheduler::Scheduler(string _algorithm)
 	this->createProcesses();
 	this->setAlgorithm(_algorithm);
 	this->setHeapSize(0);
+	this->printHeaders();
 
 	if (_algorithm == "FCFS")
 	{
@@ -116,7 +118,7 @@ int Scheduler::FCFS()
 int Scheduler::shortestJobFirst()
 {
 	// Sorting processes according to their Burst Time (duration).
-	sort(this->processes.begin(), this->processes.end(), Scheduler::compareDurations);
+	// sort(this->processes.begin(), this->processes.end(), Scheduler::compareDurations);
 
 	this->processes.at(0).setWaitingTime(0);
 	this->processes.at(0).setTurnAroundTime(
@@ -178,7 +180,7 @@ int Scheduler::priorityWithoutPreemption()
 
 int Scheduler::priorityWithPreemption()
 {
-	sort(this->processes.begin(), this->processes.end(), Scheduler::compareCreationTimes);
+	// sort(this->processes.begin(), this->processes.end(), Scheduler::compareCreationTimes);
 
 	int totalWaitingTime = 0, totalDurationTime = 0,
 		insertedprocess = 0,
@@ -232,8 +234,72 @@ int Scheduler::priorityWithPreemption()
 	return 0;
 }
 
-int Scheduler::roundRobin(/* args */)
+int Scheduler::roundRobin()
 {
+	//int contextSwitches = 0;
+	int currentTime = 0;
+	vector<Process> queue = this->getProcessesCreatedByTime(currentTime);
+
+	// Time abstraction - every iteration here is the passage of one second
+	Process currentProcess = queue.at(0);
+	Process actualProcess = this->getProcessByPid(currentProcess.getPid());
+
+	while (queue.size() > 0 && currentTime < 30)
+	{
+		bool isFinalPartOfQuantum = currentTime % 2 != 0;
+
+		if (currentTime > 0)
+		{
+			vector<Process> createdProcesses = this->getProcessesCreatedByTime(currentTime);
+			if (createdProcesses.size() > 0)
+			{
+				for (size_t i = 0; i < createdProcesses.size(); i++)
+				{
+					queue.push_back(createdProcesses.at(i));
+				}
+			}
+		}
+
+		// Getting first element only at beginning of quantums
+		Process currentProcess = queue.at(0);
+		Process actualProcess = this->getProcessByPid(currentProcess.getPid());
+
+		cout << "Current pid: " << actualProcess.getPid() << endl;
+		cout << "Executed time: " << actualProcess.context.executedTimeTotal << endl;
+
+		actualProcess.context.executedTimeTotal++;
+
+		int timeLeftToExecute = (actualProcess.getContext().getDuration()) - (actualProcess.getContext().getExecutedTimeTotal());
+		cout << "  Time left: " << timeLeftToExecute << endl;
+		printf("\n");
+
+		if (timeLeftToExecute == 1)
+		{
+			printf("Vai acabar");
+			// Means that process only has one second left to be done, and it won't be added at the end of the queue
+
+			actualProcess.setDone();
+			this->printRow(currentTime, actualProcess.getPid(), -1);
+			// Only actually 'pop' if the process is done
+			queue.erase(queue.begin());
+		}
+		else
+		{
+			// Means will need more than this second to be finished
+			this->printRow(currentTime, actualProcess.getPid(), -1);
+			//actualProcess.addExecutedTime(1);
+			cout << "Executed time: " << actualProcess.context.executedTimeTotal << endl;
+
+			if (isFinalPartOfQuantum)
+			{
+				// If this is the end of a quantum, this process will be sent back to the list
+				queue.erase(queue.begin());
+				queue.push_back(currentProcess);
+			}
+		}
+		currentTime++;
+	}
+
 	return 0;
 }
 
@@ -311,15 +377,15 @@ Process Scheduler::extractminimum()
 	return min;
 }
 
-bool Scheduler::compareDurations(const Process &a, const Process &b)
-{
-	return a.getContext().getDuration() < b.getContext().getDuration();
-}
+// bool Scheduler::compareDurations(const Process &a, const Process &b)
+// {
+// 	return a.getContext().getDuration() < b.getContext().getDuration();
+// }
 
-bool Scheduler::compareCreationTimes(const Process &a, const Process &b)
-{
-	return a.getContext().getCreationTime() < b.getContext().getCreationTime();
-}
+// bool Scheduler::compareCreationTimes(const Process &a, const Process &b)
+// {
+// 	return a.getContext().getCreationTime() < b.getContext().getCreationTime();
+// }
 
 void Scheduler::executeHighestPriorityFromHeap()
 {
@@ -363,6 +429,17 @@ bool Scheduler::doesProcessExist(pid_t _pid)
 	}
 	return false;
 }
+
+// Used to convert any value to strings
+template <typename T>
+std::string to_string(T value)
+{
+	std::ostringstream os;
+	os << value;
+	return os.str();
+}
+
+/////////////// beautifiers ///////////////
 
 void Scheduler::prettyPrint(
 	string _statusp1, string _statusp2,
@@ -434,14 +511,77 @@ void Scheduler::prettyPrint(
 	}
 }
 
+void Scheduler::printHeaders()
+{
+	string finalStr = "tempo";
+	for (size_t i = 0; i < this->processes.size(); i++)
+	{
+		string currentIndex = to_string(i);
+		finalStr.append(" P" + currentIndex);
+	}
+	finalStr.append("\n");
+
+	cout << finalStr;
+}
+
+void Scheduler::printRow(
+	int _currentTime, int _executingProcessPid, int _preemptedProcessPid)
+{
+	// Symbols
+	const char *hashtag = "## ";
+	const char *doubleDash = "-- ";
+	const char *emptySpace = "   ";
+
+	string currentTimeStr = to_string(_currentTime);
+	string nextTickStr = to_string(_currentTime + 1);
+
+	string finalStr = currentTimeStr + "- " + nextTickStr + "  ";
+
+	for (size_t i = 0; i < this->processes.size(); i++)
+	{
+		int currentProcessPid = this->processes.at(i).getPid();
+		Process currentProcess = this->processes.at(i);
+		if (currentProcessPid == _executingProcessPid)
+		{
+			finalStr.append(hashtag);
+		}
+		else if (currentProcessPid == _preemptedProcessPid || currentProcess.getContext().getCurrentState() == "Ready")
+		{
+			finalStr.append(doubleDash);
+		}
+		else
+		{
+			finalStr.append(emptySpace);
+		}
+	}
+	finalStr.append("\n");
+
+	cout << finalStr;
+}
+
 /////////////// gets ///////////////
 
 vector<ProcessParams *> Scheduler::getRawProcesses() { return this->rawProcesses; }
 vector<Process> Scheduler::getProcesses() { return this->processes; }
+vector<Process> Scheduler::getProcessesCreatedByTime(int _currentTime)
+{
+	vector<Process> createdProcesses;
+	int size = this->getProcesses().size();
+	for (int i = 0; i < size; i++)
+	{
+		Process currentProcess = this->processes.at(i);
+		if (currentProcess.getContext().getCreationTime() == _currentTime)
+		{
+			createdProcesses.push_back(currentProcess);
+		}
+	}
+	return createdProcesses;
+}
 Process Scheduler::getProcessByPid(pid_t _pid)
 {
 	if (!this->doesProcessExist(_pid))
 	{
+		printf("Process does not exist");
 		throw "Process does not exist";
 	}
 

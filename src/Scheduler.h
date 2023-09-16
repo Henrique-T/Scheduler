@@ -57,12 +57,18 @@ public:
 	static bool compareCreationTimes(const Process &a, const Process &b);
 	/* Executes the process with the highest priority in heap */
 	void executeHighestPriorityFromHeap();
-
+	/* Checks if process is in main process list */
 	bool doesProcessExist(pid_t _pid);
+	/* Pretty prints the final result */
 	void prettyPrint(string _statusp1, string _statusp2, string _statusp3, string _statusp4);
-
-	vector<Process> getProcesses();
+	/* Pretty prints the final result */
+	void printHeaders();
+	/* Pretty prints the final result */
+	void printRow(int _currentTime, int _executingProcessPid, int _preemptedProcessPid);
+	/* Gets and Sets */
 	vector<ProcessParams *> getRawProcesses();
+	vector<Process> getProcesses();
+	vector<Process> getProcessesCreatedByTime(int _currentTime);
 	Process getProcessByPid(pid_t _pid);
 	string getAlgorithm();
 	int getHeapSize();

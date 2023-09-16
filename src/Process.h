@@ -11,16 +11,16 @@ class Process
 {
 private:
 	pid_t pid;
-	ContextProcess context;
 
 public:
 	Process();
 	Process(int _creationTime, int _duration, int _priority, int _pid);
 	~Process();
+	ContextProcess context;
 	/**/
 	pid_t getPid();
 	/**/
-	ContextProcess getContext() const;
+	ContextProcess getContext();
 	/**/
 	void setPid(pid_t _pid);
 	/**/
@@ -36,11 +36,15 @@ public:
 	/**/
 	void setDynamicPriority(int _dynamicPriority);
 	/**/
+	void setDone();
+	/**/
 	void setCurrentState(string _currentState);
 	/**/
 	void setExecutedTimeCurrentQuantum(float _executedTimeCurrentQuantum);
 	/**/
 	void setExecutedTimeTotal(float _executedTimeTotal);
+	/**/
+	void addExecutedTime(int &_executedTime);
 	/**/
 	void setCreationTime(int _creationTime);
 	/**/
