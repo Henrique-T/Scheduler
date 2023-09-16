@@ -73,6 +73,8 @@ void Scheduler::createProcesses()
 
 int Scheduler::FCFS()
 {
+	int totalWaitingTime = 0, totalTurnAroundTime = 0;
+
 	this->processes.at(0).setWaitingTime(0);
 	this->processes.at(0).setTurnAroundTime(
 		this->processes.at(0).getContext().getDuration() +
@@ -87,35 +89,20 @@ int Scheduler::FCFS()
 			previousDurationTime + previousWaitingTime);
 	}
 
-	// Calculates turnaround time
-	for (size_t i = 0; i < this->getProcesses().size(); i++)
+	for (size_t i = 1; i < this->getProcesses().size(); i++)
 	{
-		int duration = this->getProcesses().at(i).getContext().getDuration();
-		int waitingTime = this->getProcesses().at(i).getContext().getWaitingTime();
-		this->processes.at(i).setTurnAroundTime(duration + waitingTime);
-	}
-
-	// Calculates average time
-	int totalWaitingTime = 0, totalTurnAroundTime = 0;
-	for (size_t i = 0; i < this->getProcesses().size(); i++)
-	{
-		totalWaitingTime = totalWaitingTime + this->getProcesses().at(i).getContext().getWaitingTime();
-		totalTurnAroundTime = totalTurnAroundTime +
-							  this->getProcesses().at(i).getContext().getTurnAroundTime();
+		totalWaitingTime += this->getProcesses().at(i).getContext().getWaitingTime();
 	}
 
 	cout << "Average waiting time = "
-		 << (float)totalWaitingTime / (float)this->getProcesses().size();
-	cout << "\nAverage turn around time = "
-		 << (float)totalTurnAroundTime / (float)this->getProcesses().size() << "\n";
+		 << (float)totalWaitingTime / (float)this->getProcesses().size()
+		 << "\n";
 
 	for (size_t i = 0; i < this->getProcesses().size(); i++)
 	{
 		cout << this->getProcesses().at(i).getContext().getPid()
 			 << " "
 			 << this->getProcesses().at(i).getContext().getWaitingTime()
-			 << " "
-			 << this->getProcesses().at(i).getContext().getTurnAroundTime()
 			 << "\n";
 	}
 	return 0;
