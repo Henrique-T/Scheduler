@@ -79,7 +79,7 @@ public:
 	/* Pretty prints the final result */
 	void prettyPrint(string _statusp1, string _statusp2, string _statusp3, string _statusp4);
 	/* Printing final stats */
-	void printFinalStats(float _averageTurnAroundTime, float _averageWaitingTime, float _numberofContextSwitches);
+	void printFinalStats(int _numberofContextSwitches);
 	/**/
 	int FCFS(/* args */);
 	/**/
