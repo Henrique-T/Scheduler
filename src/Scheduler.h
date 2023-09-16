@@ -65,9 +65,9 @@ public:
 	/**/
 	Process extractminimum();
 	/**/
-	static bool compareDurations(const Process &a, const Process &b);
+	static bool compareProcessesByStaticPriorityAsc(const Process* a, const Process* b);
 	/**/
-	static bool compareArrivalTimes(const Process &a, const Process &b);
+	static bool compareProcessesByDurationDesc(const Process* a, const Process* b);
 	/**/
 	void executeHighestPriorityFromHeap();
 	/**/

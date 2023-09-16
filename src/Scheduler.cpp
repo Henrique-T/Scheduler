@@ -18,10 +18,6 @@ template <typename T>
       return os.str();
     }
 
-bool compareProcessesByStaticPriority(const Process* a, const Process* b) {
-    return a->getContext().getStaticPriority() > b->getContext().getStaticPriority();
-}
-
 /* END OF HELPER FUNCTIONS AREA */
 
 Scheduler::Scheduler() {}
@@ -101,206 +97,15 @@ void Scheduler::createProcesses()
 
 /////////////// Scheduling Algorithms and helpers ///////////////
 
+bool Scheduler::compareProcessesByStaticPriorityAsc(const Process* a, const Process* b) {
+    return a->getContext().getStaticPriority() > b->getContext().getStaticPriority();
+}
+
+bool Scheduler::compareProcessesByDurationDesc(const Process* a, const Process* b) {
+    return a->getContext().getDuration() < b->getContext().getDuration();
+}
+
 int Scheduler::FCFS()
-{
-	this->processes.at(0).setWaitingTime(0);
-	this->processes.at(0).setTurnAroundTime(
-		this->processes.at(0).getContext().getDuration() +
-		this->processes.at(0).getContext().getWaitingTime());
-
-	for (size_t i = 1; i < this->getProcesses().size(); i++)
-	{
-		int previousDurationTime = this->getProcesses().at(i - 1).getContext().getDuration();
-		int previousWaitingTime = this->getProcesses().at(i - 1).getContext().getWaitingTime();
-		this->processes.at(i).setWaitingTime(
-			previousDurationTime + previousWaitingTime);
-		int duration = this->getProcesses().at(i).getContext().getDuration();
-		int waitingTime = this->getProcesses().at(i).getContext().getWaitingTime();
-		this->processes.at(i).setTurnAroundTime(duration + waitingTime);
-	}
-
-	// // Find average time
-	int totalWaitingTime = 0, totalTurnAroundTime = 0;
-	for (size_t i = 0; i < this->getProcesses().size(); i++)
-	{
-		totalWaitingTime = totalWaitingTime + this->getProcesses().at(i).getContext().getWaitingTime();
-		totalTurnAroundTime = totalTurnAroundTime +
-							  this->getProcesses().at(i).getContext().getTurnAroundTime();
-	}
-
-	cout << "Average waiting time = "
-		 << (float)totalWaitingTime / (float)this->getProcesses().size();
-	cout << "\nAverage turn around time = "
-		 << (float)totalTurnAroundTime / (float)this->getProcesses().size() << "\n";
-
-	for (size_t i = 0; i < this->getProcesses().size(); i++)
-	{
-		cout << this->getProcesses().at(i).getContext().getPid()
-			 << " "
-			 << this->getProcesses().at(i).getContext().getWaitingTime()
-			 << " "
-			 << this->getProcesses().at(i).getContext().getTurnAroundTime()
-			 << "\n";
-	}
-	return 0;
-}
-
-// bool Scheduler::compareDurations(const Process &a, const Process &b)
-// {
-// 	return a.getContext().getDuration() < b.getContext().getDuration();
-// }
-
-// bool compareArrivalTimes(const Process &a, const Process &b)
-// {
-// 	return a.getContext().getArrivalTime() < b.getContext().getArrivalTime();
-// }
-
-void Scheduler::executeHighestPriorityFromHeap()
-{
-	if (this->getHeapSize() == 0)
-		return;
-
-	Process min = this->extractminimum();
-	min.setOutTime(this->getCurrentTime() + 1);
-	min.setDuration(min.getContext().getDuration() - 1);
-	printf("process id = %d current time = %d\n",
-		   min.getPid(), this->getCurrentTime());
-
-	// If the process is not yet finished
-	// insert it back into the Heap*/
-	if (min.getContext().getDuration() > 0)
-	{
-		this->insertProcessToHeap(min);
-		return;
-	}
-
-	for (size_t i = 0; i < this->getProcesses().size(); i++)
-	{
-		if (this->getProcesses().at(i).getPid() == min.getPid())
-		{
-			this->getProcesses().at(i) = min;
-			break;
-		}
-	}
-}
-
-void Scheduler::manage()
-{
-	// sort(array, array + n, compare);
-
-	// int totalwaitingtime = 0, totalbursttime = 0,
-	// 	totalturnaroundtime = 0, i, insertedprocess = 0,
-	// 	heapsize = 0, currentTime = array[0].arrivalTime,
-	// 	totalresponsetime = 0;
-
-	// Process Heap[4 * n];
-
-	// // Calculating the total burst time
-	// // of the processes
-	// for (int i = 0; i < n; i++)
-	// {
-	// 	totalbursttime += array[i].burstTime;
-	// 	array[i].tempburstTime = array[i].burstTime;
-	// }
-
-	// // Inserting the processes in Heap
-	// // according to arrival time
-	// do
-	// {
-	// 	if (insertedprocess != n)
-	// 	{
-	// 		for (i = 0; i < n; i++)
-	// 		{
-	// 			if (array[i].arrivalTime == currentTime)
-	// 			{
-	// 				++insertedprocess;
-	// 				array[i].intime = -1;
-	// 				array[i].responsetime = -1;
-	// 				insert(Heap, array[i],
-	// 					   &heapsize, ¤tTime);
-	// 			}
-	// 		}
-	// 	}
-	// 	scheduling(Heap, array, n,
-	// 			   &heapsize, ¤tTime);
-	// 	++currentTime;
-	// 	if (heapsize == 0 && insertedprocess == n)
-	// 		break;
-	// } while (1);
-
-	// for (int i = 0; i < n; i++)
-	// {
-	// 	totalresponsetime += array[i].responsetime;
-	// 	totalwaitingtime += (array[i].outtime - array[i].intime - array[i].tempburstTime);
-	// 	totalbursttime += array[i].burstTime;
-	// }
-	// printf("Average waiting time = %f\n",
-	// 	   ((float)totalwaitingtime / (float)n));
-	// printf("Average response time =%f\n",
-	// 	   ((float)totalresponsetime / (float)n));
-	// printf("Average turn around time = %f\n",
-	// 	   ((float)(totalwaitingtime + totalbursttime) / (float)n));
-}
-
-int Scheduler::shortestJobFirst()
-{
-	// Sorting processes according to their Burst Time (duration).
-	//sort(this->processes.begin(), this->processes.end(), Scheduler::compareDurations);
-
-	this->processes.at(0).setWaitingTime(0);
-	this->processes.at(0).setTurnAroundTime(
-		this->processes.at(0).getContext().getDuration() +
-		this->processes.at(0).getContext().getWaitingTime());
-
-	for (size_t i = 1; i < this->getProcesses().size(); i++)
-	{
-		int previousDurationTime = this->getProcesses().at(i - 1).getContext().getDuration();
-		int previousWaitingTime = this->getProcesses().at(i - 1).getContext().getWaitingTime();
-		this->processes.at(i).setWaitingTime(
-			previousDurationTime + previousWaitingTime);
-		int duration = this->getProcesses().at(i).getContext().getDuration();
-		int waitingTime = this->getProcesses().at(i).getContext().getWaitingTime();
-		this->processes.at(i).setTurnAroundTime(duration + waitingTime);
-	}
-
-	// Calculation of Waiting Times
-	this->processes.at(0).setWaitingTime(0);
-	for (size_t i = 1; i < this->getProcesses().size(); i++)
-	{
-		int previousDurationTime = this->getProcesses().at(i - 1).getContext().getDuration();
-		int previousWaitingTime = this->getProcesses().at(i - 1).getContext().getWaitingTime();
-		this->processes.at(i).setWaitingTime(
-			previousDurationTime + previousWaitingTime);
-	}
-
-	// Find average time
-	int totalWaitingTime = 0, totalTurnAroundTime = 0;
-	for (size_t i = 0; i < this->getProcesses().size(); i++)
-	{
-		totalWaitingTime = totalWaitingTime + this->getProcesses().at(i).getContext().getWaitingTime();
-		totalTurnAroundTime = totalTurnAroundTime +
-							  this->getProcesses().at(i).getContext().getTurnAroundTime();
-	}
-
-	// Calculation of Turn Around Time and printing the data.
-	cout << "Average waiting time = "
-		 << (float)totalWaitingTime / (float)this->getProcesses().size();
-	cout << "\nAverage turn around time = "
-		 << (float)totalTurnAroundTime / (float)this->getProcesses().size() << "\n";
-
-	for (size_t i = 0; i < this->getProcesses().size(); i++)
-	{
-		cout << this->getProcesses().at(i).getContext().getPid()
-			 << " "
-			 << this->getProcesses().at(i).getContext().getWaitingTime()
-			 << " "
-			 << this->getProcesses().at(i).getContext().getTurnAroundTime()
-			 << "\n";
-	}
-	return 0;
-}
-
-int Scheduler::priorityWithoutPreemption(/* args */)
 {
 	int contextSwitches = 1;
 	int currentTime = 0;
@@ -313,7 +118,86 @@ int Scheduler::priorityWithoutPreemption(/* args */)
 	// Tracker to check if the past executing process was finalized
 	bool pastProcessFinished = false;
 
-	std::sort(queue.begin(), queue.end(), compareProcessesByStaticPriority);
+	// Time abstraction - every iteration here is the passage of one second
+	while (queue.size() > 0)
+	{
+		if (currentTime > 0) {
+			// If time is past 0, it means we always have to check if there are any new processes being created at this instant
+			vector<Process *> createdProcesses = this->getProcessesCreatedByTime(currentTime);
+			if (createdProcesses.size() > 0) {
+				for (size_t i = 0; i < createdProcesses.size(); i++) {
+					Process* currentProcessLoop = createdProcesses.at(i);
+					currentProcessLoop->setCurrentState("Ready"); // Setting scheduled process to ready
+					queue.push_back(createdProcesses.at(i));
+				}
+			}
+		}
+
+		for (size_t i = 0; i < queue.size(); i++) {
+			Process* currentProcessLoop = queue.at(i);
+			// Increasing turn around time for all processes in queue
+			currentProcessLoop->setTurnAroundTime(currentProcessLoop->getContext().getTurnAroundTime() + 1); 
+			// Increasing waiting time for the rest of processes (excluding first process in the list, since it's the one executing)
+			if (i != 0) {
+				currentProcessLoop->setWaitingTime(currentProcessLoop->getContext().getWaitingTime() + 1);
+			}
+		}
+		
+		// We only 're-sort' queue after a process is done
+		if (pastProcessFinished) {
+			/* CONTEXT SWITCH !!! */
+			contextSwitches++;
+			pastProcessFinished = false;
+		}
+
+		Process* currentProcess = queue.at(0);
+		// Avoiding setting executing more than once
+		if (pastProcessFinished) {
+			currentProcess->setCurrentState("Executing"); // Setting current process to executing
+		}
+
+		int timeLeftToExecute = (currentProcess->getContext().getDuration()) - (currentProcess->getContext().getExecutedTimeTotal());
+		
+		if (timeLeftToExecute == 1) {
+			// Means that process only has one second left to be done, and it won't be added at the end of the queue
+			int value = 1;
+			currentProcess->addExecutedTime(value);
+			currentProcess->setDone();
+			pastProcessFinished = true;
+
+			this->printRow(currentTime, currentProcess->getPid(), -1);
+			// Only actually 'pop' if the process is done
+			queue.erase(queue.begin());
+			
+		} else {
+			// Means will need more than this second to be finished
+			int value = 1;
+			currentProcess->addExecutedTime(value);
+			this->printRow(currentTime, currentProcess->getPid(), -1);
+		}
+		currentTime++;
+	}
+	// Also add up to the context switches number if the queue has finished
+	contextSwitches++;
+	this->printFinalStats(contextSwitches);
+
+	return 0;
+}
+
+int Scheduler::shortestJobFirst()
+{
+	int contextSwitches = 1;
+	int currentTime = 0;
+	std::vector<Process*> queue = this->getProcessesCreatedByTime(currentTime);
+	for (size_t i = 0; i < queue.size(); i++) {
+		Process* currentProcessLoop = queue.at(i);
+		currentProcessLoop->setCurrentState("Ready"); // Setting scheduled process to ready
+	}
+
+	// Tracker to check if the past executing process was finalized
+	bool pastProcessFinished = false;
+
+	std::sort(queue.begin(), queue.end(), this->compareProcessesByDurationDesc);
 
 	// Time abstraction - every iteration here is the passage of one second
 	while (queue.size() > 0)
@@ -345,7 +229,89 @@ int Scheduler::priorityWithoutPreemption(/* args */)
 			/* CONTEXT SWITCH !!! */
 			contextSwitches++;
 			pastProcessFinished = false;	
-			std::sort(queue.begin(), queue.end(), compareProcessesByStaticPriority);
+			std::sort(queue.begin(), queue.end(), compareProcessesByDurationDesc);
+		}
+
+		Process* currentProcess = queue.at(0);
+		// Avoiding setting executing more than once
+		if (pastProcessFinished) {
+			currentProcess->setCurrentState("Executing"); // Setting current process to executing
+		}
+
+		int timeLeftToExecute = (currentProcess->getContext().getDuration()) - (currentProcess->getContext().getExecutedTimeTotal());
+		
+		if (timeLeftToExecute == 1) {
+			// Means that process only has one second left to be done, and it won't be added at the end of the queue
+			int value = 1;
+			currentProcess->addExecutedTime(value);
+			currentProcess->setDone();
+			pastProcessFinished = true;
+
+			this->printRow(currentTime, currentProcess->getPid(), -1);
+			// Only actually 'pop' if the process is done
+			queue.erase(queue.begin());
+			
+		} else {
+			// Means will need more than this second to be finished
+			int value = 1;
+			currentProcess->addExecutedTime(value);
+			this->printRow(currentTime, currentProcess->getPid(), -1);
+		}
+		currentTime++;
+	}
+	// Also add up to the context switches number if the queue has finished
+	contextSwitches++;
+	this->printFinalStats(contextSwitches);
+
+	return 0;
+}
+
+int Scheduler::priorityWithoutPreemption(/* args */)
+{
+	int contextSwitches = 1;
+	int currentTime = 0;
+	std::vector<Process*> queue = this->getProcessesCreatedByTime(currentTime);
+	for (size_t i = 0; i < queue.size(); i++) {
+		Process* currentProcessLoop = queue.at(i);
+		currentProcessLoop->setCurrentState("Ready"); // Setting scheduled process to ready
+	}
+
+	// Tracker to check if the past executing process was finalized
+	bool pastProcessFinished = false;
+
+	std::sort(queue.begin(), queue.end(), this->compareProcessesByStaticPriorityAsc);
+
+	// Time abstraction - every iteration here is the passage of one second
+	while (queue.size() > 0)
+	{
+		if (currentTime > 0) {
+			// If time is past 0, it means we always have to check if there are any new processes being created at this instant
+			vector<Process *> createdProcesses = this->getProcessesCreatedByTime(currentTime);
+			if (createdProcesses.size() > 0) {
+				for (size_t i = 0; i < createdProcesses.size(); i++) {
+					Process* currentProcessLoop = createdProcesses.at(i);
+					currentProcessLoop->setCurrentState("Ready"); // Setting scheduled process to ready
+					queue.push_back(createdProcesses.at(i));
+				}
+			}
+		}
+
+		for (size_t i = 0; i < queue.size(); i++) {
+			Process* currentProcessLoop = queue.at(i);
+			// Increasing turn around time for all processes in queue
+			currentProcessLoop->setTurnAroundTime(currentProcessLoop->getContext().getTurnAroundTime() + 1); 
+			// Increasing waiting time for the rest of processes (excluding first process in the list, since it's the one executing)
+			if (i != 0) {
+				currentProcessLoop->setWaitingTime(currentProcessLoop->getContext().getWaitingTime() + 1);
+			}
+		}
+		
+		// We only 're-sort' queue after a process is done
+		if (pastProcessFinished) {
+			/* CONTEXT SWITCH !!! */
+			contextSwitches++;
+			pastProcessFinished = false;	
+			std::sort(queue.begin(), queue.end(), this->compareProcessesByStaticPriorityAsc);
 		}
 
 		Process* currentProcess = queue.at(0);
@@ -410,7 +376,7 @@ int Scheduler::priorityWithPreemption(/* args */)
 			}
 		}
 
-		std::sort(queue.begin(), queue.end(), compareProcessesByStaticPriority);
+		std::sort(queue.begin(), queue.end(), this->compareProcessesByStaticPriorityAsc);
 
 		for (size_t i = 0; i < queue.size(); i++) {
 			Process* currentProcessLoop = queue.at(i);
